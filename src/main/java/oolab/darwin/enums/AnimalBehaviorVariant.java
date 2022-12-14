@@ -1,6 +1,6 @@
 package oolab.darwin.enums;
 
-public enum AnimalBehavior {
+public enum AnimalBehaviorVariant {
     PREDESTINATION,
     DEVIATION
 }
