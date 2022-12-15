@@ -9,7 +9,7 @@ import oolab.darwin.interfaces.IWorldMap;
 
 import java.util.ArrayList;
 
-public class WorldMap implements IWorldMap {
+public class WorldMap extends AbstractWorldMap {
 
     //// OBSERVABLES ////
 
@@ -17,31 +17,4 @@ public class WorldMap implements IWorldMap {
     private final ArrayList<Plant> plants = new ArrayList<>();
 
 
-
-    //// INTERFACE ////
-
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public boolean place(IMapElement element) {
-        return false;
-    }
-
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public boolean objectAt(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public ArrayList<IPositionObservable> getObservables() {
-        return null;
-    }
 }
