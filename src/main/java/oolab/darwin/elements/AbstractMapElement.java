@@ -1,27 +1,17 @@
 package oolab.darwin.elements;
 
 import oolab.darwin.Vector2d;
-import oolab.darwin.enums.MutationVariant;
 import oolab.darwin.interfaces.IMapElement;
 import oolab.darwin.interfaces.IPositionObserver;
 
-public class Animal extends AbstractMapElement  {
-    public int energy;
-    public Vector2d position;
-    private MutationVariant mutationVariant;
-
-
-    //// BEHAVIOR ///
-
-    private void mutate() {
-
+public class AbstractMapElement implements IMapElement {
+    protected Vector2d position;
+    public Vector2d getPosition() {
+        return position;
     }
-
-    public void move(Vector2d position) {
-
+    public boolean isAt(Vector2d position) {
+        return this.position.equals(position);
     }
-
-    //// INTERFACE ////
 
     @Override
     public void subscribe(IPositionObserver observer) {

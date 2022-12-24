@@ -1,6 +1,7 @@
 package oolab.darwin.interfaces;
 
 import oolab.darwin.Vector2d;
+import oolab.darwin.elements.Animal;
 
 import java.util.ArrayList;
 
@@ -8,8 +9,8 @@ public interface IWorldMap {
 
     boolean canMoveTo(Vector2d position);
     boolean place( IMapElement element );
-    boolean isOccupied( Vector2d position );
-    boolean objectAt( Vector2d position );
+    boolean isOccupied(Vector2d position );
+    Object objectAt( Vector2d position );
 
     IMapBoundary mapBoundary = null;
 

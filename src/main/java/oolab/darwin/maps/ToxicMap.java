@@ -7,32 +7,6 @@ import oolab.darwin.interfaces.IWorldMap;
 
 import java.util.ArrayList;
 
-public class ToxicMap implements IWorldMap {
+public class ToxicMap extends AbstractWorldMap {
 
-    //// INTERFACE ////
-
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public boolean place(IMapElement element) {
-        return false;
-    }
-
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public boolean objectAt(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public ArrayList<IPositionObservable> getObservables() {
-        return null;
-    }
 }
