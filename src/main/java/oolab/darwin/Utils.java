@@ -19,4 +19,16 @@ public class Utils {
             getRandomInt(startBorder.y, endBorder.y)
         );
     }
+
+    public static boolean drawResult( int positiveChances ) {
+        return getRandomInt(1, 100) <= positiveChances;
+    }
+
+    public static int getAnotherIndex( int current, int length) {
+        int index = getRandomInt(0, length - 2);
+        return index >= current
+                ? (index + 1) % length
+                : index;
+    }
+
 }
