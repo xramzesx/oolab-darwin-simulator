@@ -1,24 +1,21 @@
 package oolab.darwin.boundaries;
 
+import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Border;
 import oolab.darwin.interfaces.IMapBoundary;
 
-public class EarthBoundary implements IMapBoundary {
+public class EarthBoundary extends AbstractBoundary {
+    public EarthBoundary(Config config) {
+        super(config);
+    }
+
     private void onBorderHit(Animal animal) {
 
     }
 
-    @Override
-    public Vector2d lowerLeft() {
-        return null;
-    }
-
-    @Override
-    public Vector2d upperRight() {
-        return null;
-    }
+    //// INTERFACE ////
 
     @Override
     public void onBorder(Animal animal, Border border) {
