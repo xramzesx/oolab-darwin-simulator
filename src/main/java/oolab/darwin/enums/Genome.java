@@ -3,6 +3,8 @@ package oolab.darwin.enums;
 import oolab.darwin.Config;
 import oolab.darwin.Utils;
 
+import java.util.ArrayList;
+
 public enum Genome {
 
     // NEUTRAL/GO //
@@ -26,6 +28,14 @@ public enum Genome {
         return vals [ Utils.getRandomInt( 0, vals.length - 1 ) ];
     }
 
+    public static ArrayList<Genome> generate(Config config) {
+        ArrayList<Genome> genomes = new ArrayList<>();
+
+        for (int i = 0; i < config.genomeLength; i++)
+            genomes.add(Genome.random());
+
+        return genomes;
+    }
 
     public Genome mutate(Config config) {
         if ( config.mutationVariant == MutationVariant.RANDOMIZED ) {
