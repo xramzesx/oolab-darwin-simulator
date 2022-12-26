@@ -1,5 +1,6 @@
 package oolab.darwin.enums;
 
+import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
 
 public enum MapDirection {
@@ -20,6 +21,14 @@ public enum MapDirection {
 
     public MapDirection previous() {
         return vals[ ( this.ordinal() - 1 + vals.length ) % vals.length ];
+    }
+
+    public MapDirection rotate( Genome genome ) {
+        return vals[ (this.ordinal() + genome.ordinal() ) % vals.length ];
+    }
+
+    public static MapDirection random() {
+        return vals [ Utils.getRandomInt( 0, vals.length - 1 ) ];
     }
 
     public Vector2d toUnitVector() {
