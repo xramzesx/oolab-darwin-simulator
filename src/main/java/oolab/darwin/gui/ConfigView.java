@@ -1,6 +1,16 @@
 package oolab.darwin.gui;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import oolab.darwin.Config;
 import oolab.darwin.enums.AnimalBehaviorVariant;
@@ -9,40 +19,85 @@ import oolab.darwin.enums.MapVariant;
 import oolab.darwin.enums.MutationVariant;
 
 public class ConfigView extends Application {
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+    @FXML
+    private ToggleGroup boundaryType;
+    @FXML
+    private TextField inputAnimalEnergy;
+    @FXML
+    private TextField inputAnimalQuantity;
+    @FXML
+    private TextField inputGenomeLength;
+    @FXML
+    private TextField inputMapHeight;
+    @FXML
+    private TextField inputMapWidth;
+    @FXML
+    private TextField inputMultiplicationEnergy;
+    @FXML
+    private TextField inputPlantQuantity;
+    @FXML
+    private TextField inputRefreshTime;
+    @FXML
+    private TextField inputStuffedEnergy;
+    @FXML
+    private ToggleGroup mapType;
+    @FXML
+    private RadioButton radioClassicMap;
+    @FXML
+    private RadioButton radioEarth;
+    @FXML
+    private RadioButton radioHellish;
+    @FXML
+    private RadioButton radioToxicMap;
+    @FXML
+    private Label labelErrorMessage;
+    @FXML
+    public void initialize() {
 
-        //// TEMPORARY HARDCODED CONFIG ////
 
-        //// TODO: Remove it and base only on config file
 
         Config config = new Config();
+        inputMapHeight.setText(config.mapHeight.toString());
+        inputMapWidth.setText(config.mapWidth.toString());
+        inputPlantQuantity.setText(config.initialPlantQuantity.toString());
+        inputAnimalQuantity.setText(config.initialAnimalQuantity.toString());
+        inputAnimalEnergy.setText(config.initialAnimalEnergy.toString());
+        inputStuffedEnergy.setText(config.stuffedEnergy.toString());
+        inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
+        inputGenomeLength.setText(config.genomeLength.toString());
+        inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
+        inputRefreshTime.setText(config.refreshTime.toString());
 
-        config.mapWidth=30;
-        config.mapHeight=30;
+        if(config.mapVariant.equals(MapVariant.NORMAL)) {
+            radioClassicMap.setSelected(true);
+        } else {
+            radioToxicMap.setSelected(true);
+        }
 
-        config.initialPlantQuantity = 10;
-        config.initialAnimalQuantity = 5;
-        config.initialAnimalEnergy = 10;
+        if(config.boundaryVariant.equals(BoundaryVariant.EARTH)) {
+            radioEarth.setSelected(true);
+        } else {
+            radioHellish.setSelected(true);
+        }
 
-        config.stuffedEnergy = 5;
-        config.multiplicationEnergy = 10;
-        config.genomeLength = 5;
+        labelErrorMessage.setText("");
+    }
 
-        config.boundaryVariant = BoundaryVariant.HELLISH;
-        config.mapVariant = MapVariant.TOXIC;
-        config.mutationVariant = MutationVariant.RANDOMIZED;
-        config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("ConfigView.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
 
-        //// LOAD DEFAULT DATA FROM CONFIG FILE ////
-
-        //// TODO: make default loading from file
-
-        //// SHOW CONFIG WINDOW ////
 
         //// TODO: make it multi-thread
         /// this line below is only for temporary development purpose
-        this.run(config);
 
     }
 
@@ -52,4 +107,34 @@ public class ConfigView extends Application {
         SimulationView simulationView = new SimulationView(config);
 
     }
+
+
+    public void handleClick(ActionEvent e) {
+        try {
+            Config config = new Config();
+
+            config.mapWidth = Integer.parseInt(inputMapWidth.getText());
+            config.mapHeight= Integer.parseInt(inputMapHeight.getText());
+
+            config.initialPlantQuantity = Integer.parseInt(inputPlantQuantity.getText());
+            config.initialAnimalQuantity = Integer.parseInt(inputAnimalQuantity.getText());
+            config.initialAnimalEnergy = Integer.parseInt(inputAnimalEnergy.getText());
+
+            config.stuffedEnergy = Integer.parseInt(inputStuffedEnergy.getText());
+            config.multiplicationEnergy = Integer.parseInt(inputMultiplicationEnergy.getText());
+            config.genomeLength = Integer.parseInt(inputGenomeLength.getText());
+
+            config.boundaryVariant = radioEarth.isSelected() ? BoundaryVariant.EARTH : BoundaryVariant.HELLISH;
+            config.mapVariant = radioClassicMap.isSelected() ? MapVariant.NORMAL : MapVariant.TOXIC;
+            config.mutationVariant = MutationVariant.RANDOMIZED;
+            config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
+
+            config.refreshTime = Integer.parseInt(inputRefreshTime.getText());
+            labelErrorMessage.setText("");
+            this.run(config);
+        } catch (Exception error) {
+            labelErrorMessage.setText("Invalid value " + error.getMessage().toLowerCase());
+        }
+    }
 }
+

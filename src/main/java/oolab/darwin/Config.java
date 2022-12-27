@@ -6,19 +6,20 @@ import oolab.darwin.enums.MapVariant;
 import oolab.darwin.enums.MutationVariant;
 
 public class Config {
-    public Integer mapWidth;
-    public Integer mapHeight;
+    public Integer mapWidth = 30;
+    public Integer mapHeight = 30;
 
-    public Integer initialPlantQuantity;
-    public Integer initialAnimalQuantity;
-    public Integer initialAnimalEnergy;
+    public Integer initialPlantQuantity = 10;
+    public Integer initialAnimalQuantity = 5;
+    public Integer initialAnimalEnergy = 10;
 
-    public Integer stuffedEnergy;
-    public Integer multiplicationEnergy;
-    public Integer genomeLength;
+    public Integer stuffedEnergy = 5;
+    public Integer multiplicationEnergy = 10;
+    public Integer genomeLength = 5;
 
-    public BoundaryVariant boundaryVariant;
-    public MapVariant mapVariant;
-    public MutationVariant mutationVariant;
-    public AnimalBehaviorVariant animalBehaviorVariant;
+    public BoundaryVariant boundaryVariant = BoundaryVariant.HELLISH;
+    public MapVariant mapVariant = MapVariant.TOXIC;
+    public MutationVariant mutationVariant =  MutationVariant.RANDOMIZED;
+    public AnimalBehaviorVariant animalBehaviorVariant =AnimalBehaviorVariant.DEVIATION;
+    public Integer refreshTime = 1000;
 }
