@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import oolab.darwin.Config;
 import oolab.darwin.enums.AnimalBehaviorVariant;
@@ -19,7 +20,10 @@ import oolab.darwin.enums.BoundaryVariant;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.enums.MutationVariant;
 
+import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 public class ConfigView extends Application {
@@ -70,51 +74,54 @@ public class ConfigView extends Application {
 
     @FXML
     public void initialize() {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("settings.json"));
-            Config config = new Gson().fromJson(br, Config.class);
-            labelErrorMessage.setText("");
-            loadSettings(config);
-        } catch(Exception err) {
-            labelErrorMessage.setText("Could not find file settings.json");
-            err.printStackTrace();
-        }
+        loadSettingsFromFile(new File("settings.json"), "Could not find file settings.json");
     }
 
     public void loadSettings(Config config) {
-        inputMapHeight.setText(config.mapHeight.toString());
-        inputMapWidth.setText(config.mapWidth.toString());
-        inputPlantQuantity.setText(config.initialPlantQuantity.toString());
-        inputAnimalQuantity.setText(config.initialAnimalQuantity.toString());
-        inputAnimalEnergy.setText(config.initialAnimalEnergy.toString());
-        inputStuffedEnergy.setText(config.stuffedEnergy.toString());
-        inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
-        inputGenomeLength.setText(config.genomeLength.toString());
-        inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
-        inputRefreshTime.setText(config.refreshTime.toString());
+        if(config.mapHeight != null)  inputMapHeight.setText(config.mapHeight.toString());
+        if(config.mapWidth != null)inputMapWidth.setText(config.mapWidth.toString());
+        if(config.initialPlantQuantity != null) inputPlantQuantity.setText(config.initialPlantQuantity.toString());
+        if(config.initialAnimalQuantity != null) inputAnimalQuantity.setText(config.initialAnimalQuantity.toString());
+        if(config.initialAnimalEnergy != null) inputAnimalEnergy.setText(config.initialAnimalEnergy.toString());
+        if(config.stuffedEnergy != null) inputStuffedEnergy.setText(config.stuffedEnergy.toString());
+        if(config.multiplicationEnergy != null) inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
+        if(config.genomeLength != null) inputGenomeLength.setText(config.genomeLength.toString());
+        if(config.multiplicationEnergy != null) inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
+        if(config.refreshTime != null) inputRefreshTime.setText(config.refreshTime.toString());
 
-        if(config.mapVariant.equals(MapVariant.NORMAL)) {
+        if(config.mapVariant != null && config.mapVariant.equals(MapVariant.NORMAL)) {
             radioClassicMap.setSelected(true);
         } else {
             radioToxicMap.setSelected(true);
         }
 
-        if(config.boundaryVariant.equals(BoundaryVariant.EARTH)) {
+        if(config.boundaryVariant != null && config.boundaryVariant.equals(BoundaryVariant.EARTH)) {
             radioEarth.setSelected(true);
         } else {
             radioHellish.setSelected(true);
         }
 
-        if(config.mutationVariant.equals(MutationVariant.RANDOMIZED)) {
+        if(config.mutationVariant != null && config.mutationVariant.equals(MutationVariant.RANDOMIZED)) {
             radioRandomized.setSelected(true);
         } else {
             radioCorrected.setSelected(true);
         }
 
-        if(config.animalBehaviorVariant.equals(AnimalBehaviorVariant.DEVIATION)) {
+        if(config.animalBehaviorVariant != null && config.animalBehaviorVariant.equals(AnimalBehaviorVariant.DEVIATION)) {
             radioDeviation.setSelected(true);
         } else {
             radioPredestination.setSelected(true);
+        }
+    }
+
+    public void loadSettingsFromFile(File file, String errorMessage) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            Config config = new Gson().fromJson(br, Config.class);
+            labelErrorMessage.setText("");
+            loadSettings(config);
+        } catch(Exception err) {
+            labelErrorMessage.setText(errorMessage);
         }
     }
 
@@ -144,7 +151,7 @@ public class ConfigView extends Application {
     }
 
 
-    public void handleClick(ActionEvent e) {
+    public void handleStartSimulation(ActionEvent e) {
         try {
             Config config = new Config();
 
@@ -171,5 +178,14 @@ public class ConfigView extends Application {
             labelErrorMessage.setText("Invalid value " + error.getMessage().toLowerCase());
         }
     }
+
+    public void handleLoadFromFile(ActionEvent e) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open configuration JSON file");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json files", "*.json"));
+        File file = fileChooser.showOpenDialog(null);
+        loadSettingsFromFile(file, "Make sure that selected file is valid");
+    }
+
 }
 
