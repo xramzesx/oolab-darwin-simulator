@@ -6,6 +6,7 @@ import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Genome;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IMapBoundary;
+import oolab.darwin.interfaces.IPositionObserver;
 import oolab.darwin.interfaces.IWorldMap;
 
 import java.util.ArrayList;
@@ -17,18 +18,28 @@ public class SimulationEngine implements IEngine {
     IWorldMap map;
     Config config;
 
+    IPositionObserver observer;
+
     //// INIT ////
 
     public SimulationEngine(
         Config config,
         IWorldMap map,
-        ArrayList<Vector2d> animalPositions
+        ArrayList<Vector2d> animalPositions,
+        IPositionObserver observer
     ) {
         this.map = map;
         this.config = config;
-
+        this.observer = observer;
         for ( Vector2d position : animalPositions ) {
-            Animal animal = new Animal( this.config, this.map, Genome.generate(config), position );
+            Animal animal = new Animal(
+                this.config,
+                this.map,
+                Genome.generate(config),
+                position
+            );
+
+            map.place(animal, null);
         }
 
     }
@@ -40,7 +51,7 @@ public class SimulationEngine implements IEngine {
     }
 
     private void moveAnimals() {
-
+        this.map.move();
     }
 
     private void resolveConflicts() {
@@ -59,10 +70,21 @@ public class SimulationEngine implements IEngine {
 
     }
 
+    private void simulateDay() {
+        clearCorpse();
+        moveAnimals();
+        resolveConflicts();
+        multiplyAnimals();
+        renewPlants();
+    }
+
     //// INTERFACE ////
 
     @Override
     public void run() {
-
+        for ( int i = 0; i < config.genomeLength * 5; i++ ) {
+            simulateDay();
+            this.observer.positionChanged(null, null);
+        }
     }
 }

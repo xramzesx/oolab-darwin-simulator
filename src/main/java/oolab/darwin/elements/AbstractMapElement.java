@@ -7,13 +7,12 @@ import oolab.darwin.interfaces.IPositionObserver;
 
 import java.util.ArrayList;
 
-public class AbstractMapElement implements IMapElement {
-    protected Vector2d position;
+public abstract class AbstractMapElement implements IMapElement {
+    public int energy = 0;
+
+    public Vector2d position;
     protected ArrayList<IPositionObserver> observers = new ArrayList<>();
 
-    public Vector2d getPosition() {
-        return position;
-    }
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
@@ -38,5 +37,15 @@ public class AbstractMapElement implements IMapElement {
         for ( IPositionObserver observer : observers ) {
             // observer.positionChanged();
         }
+    }
+
+    @Override
+    public Vector2d getPosition() {
+        return this.position;
+    }
+
+    @Override
+    public int getEnergy() {
+        return this.energy;
     }
 }
