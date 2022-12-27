@@ -6,6 +6,8 @@ import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Border;
 import oolab.darwin.interfaces.IMapBoundary;
 
+import java.util.ArrayList;
+
 public class EarthBoundary extends AbstractBoundary {
     public EarthBoundary(Config config) {
         super(config);
@@ -19,8 +21,10 @@ public class EarthBoundary extends AbstractBoundary {
 
     @Override
     public void onBorder(Animal animal, Border border) {
-
+        if ( border == null )
+            return;
     }
+
 
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {

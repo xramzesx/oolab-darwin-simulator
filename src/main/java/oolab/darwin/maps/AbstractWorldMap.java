@@ -50,13 +50,21 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
     }
 
     @Override
-    public boolean place(IMapElement animal) {
-        System.out.println(animal.position);
-        if (canMoveTo(animal.position)) {
-            this.objects.put(animal.position, animal);
+    public boolean place(IMapElement mapElement, Vector2d prevPosition) {
+        //// TODO: rewrite this function
+
+        if (prevPosition != null) {
+
+        }
+
+        if (canMoveTo(mapElement.getPosition())) {
+            if ( mapElement instanceof Animal )
+                animals.add((Animal) mapElement);
+            this.objects.put(mapElement.getPosition(), mapElement);
             return true;
         }
-        throw new IllegalArgumentException("Position " + animal.position + " is already taken. You can't moce to this position");
+
+        return false;
     }
 
     @Override
@@ -77,7 +85,16 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
     }
 
     @Override
+    public void move() {
+        for ( Animal animal : animals )
+            animal.move();
+
+        System.out.println(animals);
+    }
+
+    @Override
     public boolean canMoveTo(Vector2d position) {
+
         Object object = objectAt(position);
         if(object instanceof Plant) {
             this.objects.remove(object);
@@ -89,8 +106,27 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
     }
 
     @Override
+    public IMapBoundary getMapBoundary() {
+        return mapBoundary;
+    }
+
+    @Override
     public ArrayList<IPositionObservable> getObservables() {
         return null;
     }
 
+    @Override
+    public Map<Vector2d, IMapElement> getObjects() {
+        return objects;
+    }
+
+    @Override
+    public ArrayList<Animal> getAnimals() {
+        return animals;
+    }
+
+    @Override
+    public ArrayList<Plant> getPlants() {
+        return plants;
+    }
 }

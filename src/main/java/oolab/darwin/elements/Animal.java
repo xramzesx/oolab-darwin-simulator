@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class Animal extends AbstractMapElement  {
 
     //// MAIN PARAMS ////
-    public Vector2d position;
     public MapDirection direction;
     public int energy;
 
@@ -75,8 +74,23 @@ public class Animal extends AbstractMapElement  {
             currentGenome = (currentGenome + 1) % genomes.size();
         }
 
-        this.direction = this.direction.rotate(genomes.get(currentGenome));
-        Vector2d position = this.position.add(this.direction.toUnitVector() );
+
+
+        //// SETUP NEW POSITION ////
+
+        Vector2d prevPosition = this.position;
+
+        this.direction = this.direction.rotate(
+            genomes.get(currentGenome)
+        );
+
+        this.position = this.position.add(
+            this.direction.toUnitVector()
+        );
+
+        //// PLACE ////
+
+//        this.map.place(this, prevPosition);
 
         /// TODO: interact with map like in previous project
     }

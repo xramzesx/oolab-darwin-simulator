@@ -43,4 +43,18 @@ public enum MapDirection {
             case NorthWest  -> new Vector2d( -1,  1 );
         };
     }
+
+    @Override
+    public String toString() {
+        return switch (this){
+            case North      -> "N";
+            case NorthEast  -> "NE";
+            case East       -> "E";
+            case SouthEast  -> "SE";
+            case South      -> "S";
+            case SouthWest  -> "SW";
+            case West       -> "W";
+            case NorthWest  -> "NW";
+        };
+    }
 }
