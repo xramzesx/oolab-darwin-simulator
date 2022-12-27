@@ -21,4 +21,5 @@ public class Config {
     public MapVariant mapVariant;
     public MutationVariant mutationVariant;
     public AnimalBehaviorVariant animalBehaviorVariant;
+    public Integer refreshTime;
 }
