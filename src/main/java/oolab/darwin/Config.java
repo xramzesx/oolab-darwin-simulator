@@ -1,6 +1,7 @@
 package oolab.darwin;
 
 import oolab.darwin.enums.AnimalBehaviorVariant;
+import oolab.darwin.enums.BoundaryVariant;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.enums.MutationVariant;
 
@@ -14,8 +15,9 @@ public class Config {
 
     public Integer stuffedEnergy;
     public Integer multiplicationEnergy;
-    public Integer genomLength;
+    public Integer genomeLength;
 
+    public BoundaryVariant boundaryVariant;
     public MapVariant mapVariant;
     public MutationVariant mutationVariant;
     public AnimalBehaviorVariant animalBehaviorVariant;

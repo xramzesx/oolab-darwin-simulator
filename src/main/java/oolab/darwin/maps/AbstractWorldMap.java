@@ -1,13 +1,11 @@
 package oolab.darwin.maps;
 
+import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.AbstractMapElement;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.elements.Plant;
-import oolab.darwin.interfaces.IMapElement;
-import oolab.darwin.interfaces.IPositionObservable;
-import oolab.darwin.interfaces.IPositionObserver;
-import oolab.darwin.interfaces.IWorldMap;
+import oolab.darwin.interfaces.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +13,26 @@ import java.util.Map;
 import java.util.Random;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
+
+    //// OBSERVABLES ////
+
+    protected final ArrayList<Animal> animals = new ArrayList<>();
+    protected final ArrayList<Plant> plants = new ArrayList<>();
     protected final Map<Vector2d, IMapElement> objects = new HashMap<>();
+
+
+    //// GLOBALS ////
+
+    protected Config config;
+    protected IMapBoundary mapBoundary;
+
+    public AbstractWorldMap(
+        Config config,
+        IMapBoundary mapBoundary
+    ) {
+        this.config = config;
+        this.mapBoundary = mapBoundary;
+    }
 
     private void setRandomGrassFields(int n) {
         Random generator = new Random();
