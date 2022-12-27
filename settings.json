@@ -1,0 +1,15 @@
+{
+  "mapWidth": 30,
+  "mapHeight":  30,
+  "initialPlantQuantity":  10,
+  "initialAnimalQuantity": 5,
+  "initialAnimalEnergy": 10,
+  "stuffedEnergy": 5,
+  "multiplicationEnergy": 10,
+  "genomeLength": 5,
+  "boundaryVariant": "HELLISH",
+  "mapVariant": "TOXIC",
+  "mutationVariant": "RANDOMIZED",
+  "animalBehaviorVariant": "DEVIATION",
+  "refreshTime": 1000
+}

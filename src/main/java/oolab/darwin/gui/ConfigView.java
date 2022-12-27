@@ -1,5 +1,6 @@
 package oolab.darwin.gui;
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +18,9 @@ import oolab.darwin.enums.AnimalBehaviorVariant;
 import oolab.darwin.enums.BoundaryVariant;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.enums.MutationVariant;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class ConfigView extends Application {
     @FXML
@@ -52,11 +56,32 @@ public class ConfigView extends Application {
     @FXML
     private Label labelErrorMessage;
     @FXML
+    private RadioButton radioPredestination;
+    @FXML
+    private RadioButton radioRandomized;
+    @FXML
+    private RadioButton radioCorrected;
+    @FXML
+    private RadioButton radioDeviation;
+    @FXML
+    private ToggleGroup mutationVariant;
+    @FXML
+    private ToggleGroup behaviourVariant;
+
+    @FXML
     public void initialize() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("settings.json"));
+            Config config = new Gson().fromJson(br, Config.class);
+            labelErrorMessage.setText("");
+            loadSettings(config);
+        } catch(Exception err) {
+            labelErrorMessage.setText("Could not find file settings.json");
+            err.printStackTrace();
+        }
+    }
 
-
-
-        Config config = new Config();
+    public void loadSettings(Config config) {
         inputMapHeight.setText(config.mapHeight.toString());
         inputMapWidth.setText(config.mapWidth.toString());
         inputPlantQuantity.setText(config.initialPlantQuantity.toString());
@@ -80,7 +105,17 @@ public class ConfigView extends Application {
             radioHellish.setSelected(true);
         }
 
-        labelErrorMessage.setText("");
+        if(config.mutationVariant.equals(MutationVariant.RANDOMIZED)) {
+            radioRandomized.setSelected(true);
+        } else {
+            radioCorrected.setSelected(true);
+        }
+
+        if(config.animalBehaviorVariant.equals(AnimalBehaviorVariant.DEVIATION)) {
+            radioDeviation.setSelected(true);
+        } else {
+            radioPredestination.setSelected(true);
+        }
     }
 
     @Override
@@ -126,8 +161,8 @@ public class ConfigView extends Application {
 
             config.boundaryVariant = radioEarth.isSelected() ? BoundaryVariant.EARTH : BoundaryVariant.HELLISH;
             config.mapVariant = radioClassicMap.isSelected() ? MapVariant.NORMAL : MapVariant.TOXIC;
-            config.mutationVariant = MutationVariant.RANDOMIZED;
-            config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
+            config.mutationVariant = radioRandomized.isSelected() ?  MutationVariant.RANDOMIZED : MutationVariant.CORRECTED;
+            config.animalBehaviorVariant = radioDeviation.isSelected() ?  AnimalBehaviorVariant.DEVIATION : AnimalBehaviorVariant.PREDESTINATION;
 
             config.refreshTime = Integer.parseInt(inputRefreshTime.getText());
             labelErrorMessage.setText("");

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oolab.darwin.gui.ConfigView">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="664.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oolab.darwin.gui.ConfigView">
    <children>
       <Pane layoutX="20.0" layoutY="68.0" prefHeight="34.0" prefWidth="461.0">
          <children>
@@ -40,28 +40,22 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Pane layoutX="20.0" layoutY="264.0" prefHeight="34.0" prefWidth="461.0">
+      <Pane layoutX="20.0" layoutY="276.0" prefHeight="34.0" prefWidth="461.0">
          <children>
             <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Initial animal energy" />
             <TextField id="inputAnimalEnergy" fx:id="inputAnimalEnergy" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
          </children>
       </Pane>
-      <Pane layoutX="20.0" layoutY="298.0" prefHeight="34.0" prefWidth="461.0">
+      <Pane layoutX="20.0" layoutY="310.0" prefHeight="34.0" prefWidth="461.0">
          <children>
             <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Stuffed energy" />
             <TextField id="inputStuffedEnergy" fx:id="inputStuffedEnergy" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
          </children>
       </Pane>
-      <Pane layoutX="20.0" layoutY="332.0" prefHeight="34.0" prefWidth="461.0">
+      <Pane layoutX="20.0" layoutY="344.0" prefHeight="34.0" prefWidth="461.0">
          <children>
             <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Multiplication energy" />
             <TextField id="inputMultiplicationEnergy" fx:id="inputMultiplicationEnergy" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
-         </children>
-      </Pane>
-      <Pane layoutX="20.0" layoutY="366.0" prefHeight="34.0" prefWidth="461.0">
-         <children>
-            <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Genome length" />
-            <TextField id="inputGenomeLength" fx:id="inputGenomeLength" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
          </children>
       </Pane>
       <Pane layoutX="20.0" layoutY="136.0" prefHeight="34.0" prefWidth="461.0">
@@ -74,18 +68,18 @@
             <RadioButton id="radioHellish" fx:id="radioHellish" layoutX="387.0" layoutY="8.0" mnemonicParsing="false" text="Hellish" toggleGroup="$boundaryType" />
          </children>
       </Pane>
-      <Label layoutX="199.0" layoutY="238.0" text="Energy settings">
+      <Label layoutX="199.0" layoutY="250.0" text="Energy settings">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Pane layoutX="20.0" layoutY="426.0" prefHeight="34.0" prefWidth="461.0">
+      <Pane layoutX="20.0" layoutY="560.0" prefHeight="34.0" prefWidth="461.0">
          <children>
             <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Real refresh time (ms)" />
             <TextField id="inputRefreshTime" fx:id="inputRefreshTime" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
          </children>
       </Pane>
-      <Label layoutX="231.0" layoutY="400.0" text="Other">
+      <Label layoutX="231.0" layoutY="534.0" text="Other">
          <font>
             <Font size="16.0" />
          </font>
@@ -100,11 +94,44 @@
             <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Map type" />
          </children>
       </Pane>
-      <Pane layoutX="20.0" layoutY="482.0" prefHeight="34.0" prefWidth="461.0">
+      <Pane layoutX="20.0" layoutY="616.0" prefHeight="34.0" prefWidth="461.0">
          <children>
             <Label fx:id="labelErrorMessage" layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="291.0" text="Error" textFill="RED" />
             <Button layoutX="315.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleClick" prefHeight="34.0" prefWidth="132.0" style="-fx-background-color: #5dc245;" text="Start simulation" textFill="WHITE" />
          </children>
       </Pane>
+      <Pane layoutX="20.0" layoutY="412.0" prefHeight="34.0" prefWidth="461.0">
+         <children>
+            <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Genome length" />
+            <TextField id="inputGenomeLength" fx:id="inputGenomeLength" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="20.0" layoutY="446.0" prefHeight="34.0" prefWidth="461.0">
+         <children>
+            <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Mutation variant" />
+            <RadioButton id="radioEarth" fx:id="radioCorrected" layoutX="269.0" layoutY="8.0" mnemonicParsing="false" text="Corrected">
+               <toggleGroup>
+                  <ToggleGroup fx:id="mutationVariant" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton id="radioHellish" fx:id="radioRandomized" layoutX="355.0" layoutY="8.0" mnemonicParsing="false" text="Randomized" toggleGroup="$mutationVariant" />
+         </children>
+      </Pane>
+      <Pane layoutX="20.0" layoutY="480.0" prefHeight="34.0" prefWidth="461.0">
+         <children>
+            <Label layoutX="14.0" layoutY="7.0" prefHeight="20.0" prefWidth="181.0" text="Animal behavior variant" />
+            <RadioButton id="radioEarth" fx:id="radioPredestination" layoutX="260.0" layoutY="8.0" mnemonicParsing="false" text="Predestination">
+               <toggleGroup>
+                  <ToggleGroup fx:id="behaviourVariant" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton id="radioHellish" fx:id="radioDeviation" layoutX="372.0" layoutY="8.0" mnemonicParsing="false" text="Deviation" toggleGroup="$behaviourVariant" />
+         </children>
+      </Pane>
+      <Label layoutX="192.0" layoutY="385.0" text="Mutation settings">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
