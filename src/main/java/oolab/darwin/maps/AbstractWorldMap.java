@@ -34,20 +34,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
         this.mapBoundary = mapBoundary;
     }
 
-    private void setRandomGrassFields(int n) {
-        Random generator = new Random();
-        int i = 0;
-        while(i < n) {
-            int x = generator.nextInt(this.mapBoundary.upperRight().x - 1);
-            int y = generator.nextInt(this.mapBoundary.upperRight().y - 1);
-            Object objectAtThisArea = this.objectAt(new Vector2d(x, y));
-            if(!(objectAtThisArea instanceof Plant) && !(objectAtThisArea instanceof Animal)) {
-                Vector2d newPosition = new Vector2d(x, y);
-                objects.put(newPosition, new Plant(1));
-                i += 1;
-            }
-        }
-    }
 
     @Override
     public boolean place(IMapElement mapElement, Vector2d prevPosition) {
@@ -92,7 +78,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
         Object object = objectAt(position);
         if(object instanceof Plant) {
             this.objects.remove(object);
-            setRandomGrassFields(1);
         } else if(object instanceof Animal) {
             return false;
         }
