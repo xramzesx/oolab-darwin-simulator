@@ -16,7 +16,7 @@ import oolab.darwin.maps.WorldMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class SimulationView implements Runnable, IPositionObserver{
+public class SimulationView implements Runnable, IObserver {
     private final Config config;
 
     private ArrayList<Vector2d> generateAnimalPositions() {
@@ -83,10 +83,11 @@ public class SimulationView implements Runnable, IPositionObserver{
     }
 
     @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        //// TODO: do better api
-        System.out.println(worldMap.getAnimals());
-        System.out.println(worldMap.getPlants());
-        System.out.println(worldMap.getObjects());
+    public void signal(IEngine engine) {
+        
+        //// example api use: ///
+
+        /// engine.getWorldMap();
+        /// engine.getMapBoundary();
     }
 }

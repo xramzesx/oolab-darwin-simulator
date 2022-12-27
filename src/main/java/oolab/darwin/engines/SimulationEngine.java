@@ -6,7 +6,7 @@ import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Genome;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IMapBoundary;
-import oolab.darwin.interfaces.IPositionObserver;
+import oolab.darwin.interfaces.IObserver;
 import oolab.darwin.interfaces.IWorldMap;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class SimulationEngine implements IEngine {
     IWorldMap map;
     Config config;
 
-    IPositionObserver observer;
+    IObserver observer;
 
     //// INIT ////
 
@@ -26,7 +26,7 @@ public class SimulationEngine implements IEngine {
         Config config,
         IWorldMap map,
         ArrayList<Vector2d> animalPositions,
-        IPositionObserver observer
+        IObserver observer
     ) {
         this.map = map;
         this.config = config;

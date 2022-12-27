@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
+public abstract class AbstractWorldMap implements IWorldMap {
 
     //// OBSERVABLES ////
 
@@ -77,12 +77,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
         return this.objects.get(position);
     }
 
-    @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        IMapElement animal = this.objects.get(oldPosition);
-        this.objects.remove(oldPosition);
-        this.objects.put(newPosition, animal);
-    }
 
     @Override
     public void move() {
@@ -111,7 +105,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
     }
 
     @Override
-    public ArrayList<IPositionObservable> getObservables() {
+    public ArrayList<IObservable> getObservables() {
         return null;
     }
 

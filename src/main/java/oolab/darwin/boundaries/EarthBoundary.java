@@ -25,9 +25,4 @@ public class EarthBoundary extends AbstractBoundary {
             return;
     }
 
-
-    @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-
-    }
 }

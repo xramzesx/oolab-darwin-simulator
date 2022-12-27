@@ -18,7 +18,7 @@ public interface IWorldMap {
 
     void move();
 
-    ArrayList<IPositionObservable> getObservables();
+    ArrayList<IObservable> getObservables();
 
     Map<Vector2d, IMapElement> getObjects();
 

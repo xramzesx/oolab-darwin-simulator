@@ -2,7 +2,7 @@ package oolab.darwin.interfaces;
 
 import oolab.darwin.Vector2d;
 
-public interface IMapElement extends IPositionObservable {
+public interface IMapElement {
     Vector2d getPosition();
     int getEnergy();
 }
