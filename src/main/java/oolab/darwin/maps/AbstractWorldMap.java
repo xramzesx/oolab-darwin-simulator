@@ -91,17 +91,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
     }
 
     @Override
-    public boolean isOccupied(Vector2d position) {
-        return this.objects.containsKey(position);
-    }
-
-    @Override
-    public Object objectAt(Vector2d position) {
-        return this.objects.get(position);
-    }
-
-
-    @Override
     public ArrayList<IMapElement> objectsAt(Vector2d position) {
         ArrayList<IMapElement> mapElements = new ArrayList<>();
 
@@ -123,18 +112,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
             animal.move();
 
         System.out.println(animalMap);
-    }
-
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-
-        Object object = objectAt(position);
-        if(object instanceof Plant) {
-            this.objects.remove(object);
-        } else if(object instanceof Animal) {
-            return false;
-        }
-        return true;
     }
 
     @Override
