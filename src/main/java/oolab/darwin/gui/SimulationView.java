@@ -5,15 +5,14 @@ import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
 import oolab.darwin.boundaries.EarthBoundary;
 import oolab.darwin.boundaries.HellishBoundary;
-import oolab.darwin.elements.Animal;
 import oolab.darwin.engines.SimulationEngine;
-import oolab.darwin.enums.BoundaryVariant;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.interfaces.*;
 import oolab.darwin.maps.ToxicMap;
 import oolab.darwin.maps.WorldMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class SimulationView implements Runnable, IObserver {
@@ -56,20 +55,17 @@ public class SimulationView implements Runnable, IObserver {
             case TOXIC ->   new ToxicMap(config, mapBoundary);
         };
 
-        worldMap = config.mapVariant == MapVariant.NORMAL
-            ? new WorldMap(config, mapBoundary)
-            : new ToxicMap(config, mapBoundary);
-
 
         ArrayList<Vector2d> animalPositions = generateAnimalPositions();
 
-        System.out.println(config.initialAnimalQuantity);
-        System.out.println(animalPositions);
-
-        System.out.println(config.mapWidth);
-        System.out.println(config.mapHeight);
-
-        engine = new SimulationEngine(config, worldMap, animalPositions, this);
+        engine = new SimulationEngine(
+            config,
+            worldMap,
+            animalPositions,
+            new ArrayList<>(Arrays.asList(
+                this
+            ))
+        );
 
         //// START SIMULATION ////
 
