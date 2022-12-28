@@ -132,7 +132,7 @@ public class SimulationView extends Application implements Runnable, IObserver {
         for (int i = 0; i < plants.size(); i++) {
             if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
                 Pane plant = new Pane();
-                plant.setStyle("-fx-background-color: #55c233");
+                plant.setStyle("-fx-background-color: #375e2a");
                 simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
             }
         }
@@ -163,12 +163,6 @@ public class SimulationView extends Application implements Runnable, IObserver {
     @Override
     public void run() {
 
-        //// TODO: add missing config inputs
-        config.plantsPerDay = 4;
-        config.plantEnergy = 5;
-        config.minMutationQuantity = 2;
-        config.maxMutationQuantity = 6;
-
 
         engine = new SimulationEngine(
             config,
@@ -189,7 +183,8 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
         //// example api use: ///
 
-        /// engine.getWorldMap();
+        System.out.println(engine.getWorldMap());
+
         /// engine.getMapBoundary();
     }
 }
