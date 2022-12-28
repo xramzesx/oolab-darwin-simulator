@@ -1,12 +1,13 @@
 package oolab.darwin.gui.elements;
 
 import oolab.darwin.Vector2d;
+import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IGuiElement;
 import oolab.darwin.interfaces.IMapElement;
 
 public class FieldGuiElement implements IGuiElement {
     @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+    public void signal(IEngine engine) {
 
     }
 

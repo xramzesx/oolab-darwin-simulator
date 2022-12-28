@@ -5,18 +5,17 @@ import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
 import oolab.darwin.boundaries.EarthBoundary;
 import oolab.darwin.boundaries.HellishBoundary;
-import oolab.darwin.elements.Animal;
 import oolab.darwin.engines.SimulationEngine;
-import oolab.darwin.enums.BoundaryVariant;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.interfaces.*;
 import oolab.darwin.maps.ToxicMap;
 import oolab.darwin.maps.WorldMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
-public class SimulationView implements Runnable, IPositionObserver{
+public class SimulationView implements Runnable, IObserver {
     private final Config config;
 
     private ArrayList<Vector2d> generateAnimalPositions() {
@@ -56,20 +55,17 @@ public class SimulationView implements Runnable, IPositionObserver{
             case TOXIC ->   new ToxicMap(config, mapBoundary);
         };
 
-        worldMap = config.mapVariant == MapVariant.NORMAL
-            ? new WorldMap(config, mapBoundary)
-            : new ToxicMap(config, mapBoundary);
-
 
         ArrayList<Vector2d> animalPositions = generateAnimalPositions();
 
-        System.out.println(config.initialAnimalQuantity);
-        System.out.println(animalPositions);
-
-        System.out.println(config.mapWidth);
-        System.out.println(config.mapHeight);
-
-        engine = new SimulationEngine(config, worldMap, animalPositions, this);
+        engine = new SimulationEngine(
+            config,
+            worldMap,
+            animalPositions,
+            new ArrayList<>(Arrays.asList(
+                this
+            ))
+        );
 
         //// START SIMULATION ////
 
@@ -83,10 +79,11 @@ public class SimulationView implements Runnable, IPositionObserver{
     }
 
     @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        //// TODO: do better api
-        System.out.println(worldMap.getAnimals());
-        System.out.println(worldMap.getPlants());
-        System.out.println(worldMap.getObjects());
+    public void signal(IEngine engine) {
+        
+        //// example api use: ///
+
+        /// engine.getWorldMap();
+        /// engine.getMapBoundary();
     }
 }

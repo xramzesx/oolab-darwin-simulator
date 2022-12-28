@@ -1,23 +1,23 @@
 package oolab.darwin.maps;
 
 import oolab.darwin.Config;
+import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
-import oolab.darwin.elements.AbstractMapElement;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.elements.Plant;
 import oolab.darwin.interfaces.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
+public abstract class AbstractWorldMap implements IWorldMap {
 
     //// OBSERVABLES ////
 
     protected final ArrayList<Animal> animals = new ArrayList<>();
-    protected final ArrayList<Plant> plants = new ArrayList<>();
+
+    protected final Map<Vector2d, TreeSet<Animal>> animalMap = new HashMap<>();
+    protected final Map<Vector2d, Plant> plantMap = new HashMap<>();
+
     protected final Map<Vector2d, IMapElement> objects = new HashMap<>();
 
 
@@ -34,37 +34,60 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
         this.mapBoundary = mapBoundary;
     }
 
-    private void setRandomGrassFields(int n) {
-        Random generator = new Random();
-        int i = 0;
-        while(i < n) {
-            int x = generator.nextInt(this.mapBoundary.upperRight().x - 1);
-            int y = generator.nextInt(this.mapBoundary.upperRight().y - 1);
-            Object objectAtThisArea = this.objectAt(new Vector2d(x, y));
-            if(!(objectAtThisArea instanceof Plant) && !(objectAtThisArea instanceof Animal)) {
-                Vector2d newPosition = new Vector2d(x, y);
-                objects.put(newPosition, new Plant(1));
-                i += 1;
-            }
+    protected void placeAnimal( Animal animal, Vector2d position ) {
+        if (!animalMap.containsKey(position))
+            animalMap.put(position, new TreeSet<Animal>(
+                (a1, a2) -> {
+                    if (a1.energy != a2.energy)
+                        return a1.energy - a2.energy;
+                    if ( a1.birthdate != a2.birthdate )
+                        return a1.birthdate - a2.birthdate;
+                    if (a1.getChildren() != a2.getChildren())
+                        return a1.getChildren() - a2.getChildren();
+
+                    return a1 == a2 ? 0 : Utils.getRandomInt(0,1) * 2 - 1;
+                }
+            ));
+
+        animalMap.get(position).add(animal);
+
+    }
+
+    protected void unplaceAnimal( Animal animal, Vector2d position ) {
+        if (!animalMap.containsKey(position))
+            return;
+
+        TreeSet<Animal> animalSet = animalMap.get(position);
+        animalSet.remove(animal);
+
+        if (animalSet.size() == 0 ){
+            animalMap.remove(position);
         }
     }
 
+
     @Override
-    public boolean place(IMapElement mapElement, Vector2d prevPosition) {
-        //// TODO: rewrite this function
+    public void place(IMapElement mapElement, Vector2d prevPosition) {
 
-        if (prevPosition != null) {
+        if ( mapElement instanceof Animal ) {
+            Animal animal = (Animal) mapElement;
+
+            if ( prevPosition == null )
+                animals.add(animal);
+            else {
+                unplaceAnimal(animal, prevPosition);
+            }
+
+            mapBoundary.checkPosition(animal);
+            placeAnimal(animal, animal.position);
 
         }
 
-        if (canMoveTo(mapElement.getPosition())) {
-            if ( mapElement instanceof Animal )
-                animals.add((Animal) mapElement);
-            this.objects.put(mapElement.getPosition(), mapElement);
-            return true;
+
+        if ( mapElement instanceof Plant ) {
+            Plant plant = (Plant) mapElement;
         }
 
-        return false;
     }
 
     @Override
@@ -77,11 +100,21 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
         return this.objects.get(position);
     }
 
+
     @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        IMapElement animal = this.objects.get(oldPosition);
-        this.objects.remove(oldPosition);
-        this.objects.put(newPosition, animal);
+    public ArrayList<IMapElement> objectsAt(Vector2d position) {
+        ArrayList<IMapElement> mapElements = new ArrayList<>();
+
+        if ( animalMap.containsKey(position) ) {
+            TreeSet<Animal> animalSet = animalMap.get(position);
+
+            mapElements.addAll(animalSet);
+        }
+
+        if (plantMap.containsKey(position))
+            mapElements.add(plantMap.get(position));
+
+        return mapElements;
     }
 
     @Override
@@ -89,7 +122,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
         for ( Animal animal : animals )
             animal.move();
 
-        System.out.println(animals);
+        System.out.println(animalMap);
     }
 
     @Override
@@ -98,7 +131,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
         Object object = objectAt(position);
         if(object instanceof Plant) {
             this.objects.remove(object);
-            setRandomGrassFields(1);
         } else if(object instanceof Animal) {
             return false;
         }
@@ -111,7 +143,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
     }
 
     @Override
-    public ArrayList<IPositionObservable> getObservables() {
+    public ArrayList<IObservable> getObservables() {
         return null;
     }
 
@@ -127,6 +159,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionObserver {
 
     @Override
     public ArrayList<Plant> getPlants() {
-        return plants;
+        return new ArrayList<>( plantMap.values() );
     }
 }

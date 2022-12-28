@@ -6,9 +6,6 @@ import oolab.darwin.Vector2d;
 import oolab.darwin.enums.AnimalBehaviorVariant;
 import oolab.darwin.enums.Genome;
 import oolab.darwin.enums.MapDirection;
-import oolab.darwin.enums.MutationVariant;
-import oolab.darwin.interfaces.IMapElement;
-import oolab.darwin.interfaces.IPositionObserver;
 import oolab.darwin.interfaces.IWorldMap;
 
 import java.util.ArrayList;
@@ -23,6 +20,8 @@ public class Animal extends AbstractMapElement  {
 
     private int currentGenome = 0;
     private final ArrayList<Genome> genomes;
+
+    private int children = 0;
 
     //// GLOBALS ////
     private final Config config;
@@ -90,7 +89,7 @@ public class Animal extends AbstractMapElement  {
 
         //// PLACE ////
 
-//        this.map.place(this, prevPosition);
+        this.map.place(this, prevPosition);
 
         /// TODO: interact with map like in previous project
     }
@@ -110,6 +109,13 @@ public class Animal extends AbstractMapElement  {
 
     public void changeEnergy( int difference ) {
         this.energy = Math.max( this.energy + difference, 0 );
+    }
+
+
+    //// GETTERS ////
+
+    public int getChildren() {
+        return children;
     }
 
 
