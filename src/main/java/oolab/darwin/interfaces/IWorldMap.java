@@ -16,7 +16,7 @@ public interface IWorldMap {
     void place( IMapElement mapElement, Vector2d prevPosition );
     void move();
 
-    void spawnPlants();
+    void spawnPlants(boolean isInitial);
 
     void consume( Animal animal, Plant plant );
     void multiplyAt (Vector2d position, int birthdate);

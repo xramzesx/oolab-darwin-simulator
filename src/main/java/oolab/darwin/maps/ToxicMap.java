@@ -15,9 +15,9 @@ public class ToxicMap extends AbstractWorldMap {
     }
 
     @Override
-    public void spawnPlants() {
+    public void spawnPlants(boolean isInitial) {
         prepareArea();
-        super.spawnPlants();
+        super.spawnPlants(isInitial);
     }
 
     public ToxicMap(

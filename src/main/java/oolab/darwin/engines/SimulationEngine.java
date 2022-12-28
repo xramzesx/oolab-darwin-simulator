@@ -48,6 +48,7 @@ public class SimulationEngine implements IEngine {
             map.place(animal, null);
         }
 
+        this.map.spawnPlants(true);
     }
 
     //// STEPS ////
@@ -79,17 +80,16 @@ public class SimulationEngine implements IEngine {
 
 
     private void multiplyAnimals() {
-        Map<Vector2d, TreeSet<Animal>> animalMap = map.getAnimalMap();
 
-        for ( Vector2d position : animalMap.keySet() ) {
+        ArrayList<Vector2d> positions = new ArrayList<>(map.getAnimalMap().keySet());
+
+        for ( Vector2d position : positions ) {
             map.multiplyAt(position, day);
         }
-
-
     }
 
     private void renewPlants() {
-        this.map.spawnPlants();
+        this.map.spawnPlants(false);
     }
 
     private void simulateDay() {
@@ -106,6 +106,7 @@ public class SimulationEngine implements IEngine {
 
         this.signal();
         renewPlants();
+        System.gc();
     }
 
     //// INTERFACE ////
@@ -114,10 +115,10 @@ public class SimulationEngine implements IEngine {
 
     @Override
     public void run() {
-        for ( int i = 0; i < config.genomeLength * 5; i++ ) {
+        while (map.getAnimals().size() > 0)
             simulateDay();
 
-        }
+        System.out.println("[engine] simulation ended");
     }
 
     @Override

@@ -35,7 +35,7 @@ public abstract class AbstractWorldMap implements IWorldMap {
     }
 
     @Override
-    public void spawnPlants() {
+    public void spawnPlants(boolean isInitial) {
         ///// PREPARE AVAILABLE SPACE ////
 
         Set <Vector2d> nonGreenArea = getNonGreenArea();
@@ -56,7 +56,11 @@ public abstract class AbstractWorldMap implements IWorldMap {
                 availableOutside.remove(position);
         }
 
-        for (int i = 0; i < config.plantsPerDay; i++ )
+        int plantQuantity = isInitial
+                ? config.initialPlantQuantity
+                : config.plantsPerDay;
+
+        for (int i = 0; i < plantQuantity ; i++ )
             spawnPlant(availableInside, availableOutside);
 
     }

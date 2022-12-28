@@ -19,9 +19,4 @@ public abstract class AbstractMapElement implements IMapElement {
     public Vector2d getPosition() {
         return this.position;
     }
-
-    @Override
-    public int getEnergy() {
-        return this.energy;
-    }
 }

@@ -39,6 +39,7 @@ public class Animal extends AbstractMapElement  {
         this.position = position;
         this.direction = MapDirection.random();
         this.genomes = genomes;
+        this.energy = config.initialAnimalEnergy;
     }
 
     public Animal(
