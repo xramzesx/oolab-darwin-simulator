@@ -1,6 +1,5 @@
 package oolab.darwin.gui.elements;
 
-import oolab.darwin.Vector2d;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IGuiElement;
 import oolab.darwin.interfaces.IMapElement;

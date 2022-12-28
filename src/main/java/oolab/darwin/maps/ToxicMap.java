@@ -2,7 +2,6 @@ package oolab.darwin.maps;
 
 import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
-import oolab.darwin.elements.Plant;
 import oolab.darwin.interfaces.IMapBoundary;
 
 import java.util.HashSet;
@@ -15,9 +14,9 @@ public class ToxicMap extends AbstractWorldMap {
     }
 
     @Override
-    public void spawnPlants() {
+    public void spawnPlants(boolean isInitial) {
         prepareArea();
-        super.spawnPlants();
+        super.spawnPlants(isInitial);
     }
 
     public ToxicMap(

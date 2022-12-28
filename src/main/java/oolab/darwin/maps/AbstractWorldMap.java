@@ -6,8 +6,10 @@ import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.elements.Plant;
 import oolab.darwin.interfaces.*;
+import oolab.darwin.stats.AnimalStats;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements IWorldMap {
 
@@ -35,7 +37,7 @@ public abstract class AbstractWorldMap implements IWorldMap {
     }
 
     @Override
-    public void spawnPlants() {
+    public void spawnPlants(boolean isInitial) {
         ///// PREPARE AVAILABLE SPACE ////
 
         Set <Vector2d> nonGreenArea = getNonGreenArea();
@@ -56,7 +58,11 @@ public abstract class AbstractWorldMap implements IWorldMap {
                 availableOutside.remove(position);
         }
 
-        for (int i = 0; i < config.plantsPerDay; i++ )
+        int plantQuantity = isInitial
+                ? config.initialPlantQuantity
+                : config.plantsPerDay;
+
+        for (int i = 0; i < plantQuantity ; i++ )
             spawnPlant(availableInside, availableOutside);
 
     }
@@ -145,8 +151,8 @@ public abstract class AbstractWorldMap implements IWorldMap {
                 (a1, a2) -> {
                     if (a1.energy != a2.energy)
                         return a1.energy - a2.energy;
-                    if ( a1.birthdate != a2.birthdate )
-                        return a1.birthdate - a2.birthdate;
+                    if ( a1.birthDate != a2.birthDate )
+                        return a1.birthDate - a2.birthDate;
                     if (a1.getChildren() != a2.getChildren())
                         return a1.getChildren() - a2.getChildren();
 
@@ -192,7 +198,14 @@ public abstract class AbstractWorldMap implements IWorldMap {
         if ( mapElement instanceof Plant ) {
             Plant plant = (Plant) mapElement;
         }
+    }
 
+    @Override
+    public void kill(Animal animal, int deathDate ) {
+
+        animal.kill(deathDate);
+
+        unplaceAnimal(animal, animal.position);
     }
 
     @Override
@@ -209,6 +222,17 @@ public abstract class AbstractWorldMap implements IWorldMap {
             mapElements.add(plantMap.get(position));
 
         return mapElements;
+    }
+
+    @Override
+    public ArrayList<AnimalStats> statsAt(Vector2d position, int currentDay) {
+
+        return objectsAt(position)
+                .stream()
+                .filter(mapElement -> mapElement instanceof Animal)
+                .map(Animal.class::cast)
+                .map(animal -> animal.getStats(currentDay))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
