@@ -3,6 +3,7 @@ package oolab.darwin.gui;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -31,18 +32,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class SimulationViewController extends Application implements Runnable, IObserver {
-
     @FXML
     private GridPane simulationGridPane;
-
-    Config config;
-    IMapBoundary mapBoundary;
-    IWorldMap worldMap;
-    IEngine engine;
-
-    Thread engineThread;
-
-    ArrayList<Vector2d> animalPositions;
+    @FXML
+    private Button buttonPause;
+    @FXML
+    private Label labelAnimals;
+    @FXML
+    private Label labelPlants;
+    private Config config;
+    private IMapBoundary mapBoundary;
+    private IWorldMap worldMap;
+    private IEngine engine;
+    private Thread engineThread;
+    private ArrayList<Vector2d> animalPositions;
+    public boolean isThreadRunning = true;
 
     private ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
@@ -65,9 +69,11 @@ public class SimulationViewController extends Application implements Runnable, I
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #55c233");
 
+        //// PREPARING SIMULATION ////
+
         mapBoundary = switch (config.boundaryVariant) {
-            case EARTH ->   new EarthBoundary(config);
-            case HELLISH -> new HellishBoundary(config);
+            case EARTH ->   new EarthBoundary   (config);
+            case HELLISH -> new HellishBoundary (config);
         };
 
 
@@ -76,23 +82,8 @@ public class SimulationViewController extends Application implements Runnable, I
             case TOXIC ->   new ToxicMap(config, mapBoundary);
         };
 
-        worldMap = config.mapVariant == MapVariant.NORMAL
-                ? new WorldMap(config, mapBoundary)
-                : new ToxicMap(config, mapBoundary);
-
-
         animalPositions = generateAnimalPositions();
-        engine = new SimulationEngine(
-                config,
-                worldMap,
-                animalPositions,
-                new ArrayList<>(Arrays.asList(
-                        this
-                )),
-            this
-        );
-        engineThread = new Thread(engine);
-        engineThread.start();
+        this.run();
     }
 
     public void renderGridPane() {
@@ -128,6 +119,7 @@ public class SimulationViewController extends Application implements Runnable, I
 
 
         ArrayList<Animal> animals = worldMap.getAnimals();
+        labelAnimals.setText("Animal count: " + animals.size());
         for (int i = 0; i < animals.size(); i++) {
             if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
                 Pane animal = new Pane();
@@ -137,6 +129,7 @@ public class SimulationViewController extends Application implements Runnable, I
        }
 
         ArrayList<Plant> plants = worldMap.getPlants();
+        labelPlants.setText("Plant count: " + plants.size());
         for (int i = 0; i < plants.size(); i++) {
             if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
                 Pane plant = new Pane();
@@ -147,7 +140,20 @@ public class SimulationViewController extends Application implements Runnable, I
 
     }
 
-    public void handleStartClick() {
+    public void handlePauseClick() {
+        if(isThreadRunning) {
+            engineThread.suspend();
+            isThreadRunning = false;
+            buttonPause.setText("Start");
+            buttonPause.setStyle("-fx-background-color: #55c233");
+
+        } else {
+            engineThread.resume();
+            isThreadRunning = true;
+            buttonPause.setText("Pause");
+            buttonPause.setStyle("-fx-background-color: #ff605C");
+        }
+
     }
 
     @Override
@@ -157,11 +163,25 @@ public class SimulationViewController extends Application implements Runnable, I
 
     @Override
     public void run() {
-
+        engine = new SimulationEngine(
+                config,
+                worldMap,
+                animalPositions,
+                new ArrayList<>(Arrays.asList(
+                        this
+                )),
+                this
+        );
+        engineThread = new Thread(engine);
+        engineThread.start();
     }
 
     @Override
     public void signal(IEngine engine) {
 
+        //// example api use: ///
+
+        /// engine.getWorldMap();
+        /// engine.getMapBoundary();
     }
 }
