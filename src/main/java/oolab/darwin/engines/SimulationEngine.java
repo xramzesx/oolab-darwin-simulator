@@ -1,9 +1,13 @@
 package oolab.darwin.engines;
 
+import javafx.application.Platform;
 import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Genome;
+import oolab.darwin.gui.SimulationView;
+import oolab.darwin.interfaces.IEngine;
+import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.interfaces.*;
 
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ public class SimulationEngine implements IEngine {
     private final Config config;
 
     private final ArrayList<IObserver> observers = new ArrayList<>();
-
+    private SimulationView app;
 
 
     //// INIT ////
@@ -25,10 +29,12 @@ public class SimulationEngine implements IEngine {
         Config config,
         IWorldMap map,
         ArrayList<Vector2d> animalPositions,
-        ArrayList<IObserver> observers
+        ArrayList<IObserver> observers,
+        SimulationView app
     ) {
         this.map = map;
         this.config = config;
+        this.app = app;
 
         for (IObserver observer: observers)
             subscribe(observer);
@@ -88,6 +94,14 @@ public class SimulationEngine implements IEngine {
     public void run() {
         for ( int i = 0; i < config.genomeLength * 5; i++ ) {
             simulateDay();
+            if(this.app != null) {
+                 try {
+                     Platform.runLater(app::renderGridPane);
+                     Thread.sleep(this.config.refreshTime);
+                 } catch (InterruptedException e) {
+                     throw new RuntimeException(e);
+                 }
+            }
             this.signal();
         }
     }

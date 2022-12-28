@@ -78,7 +78,7 @@ public class SimulationEngineTest {
 
 
 
-        IEngine engine = new SimulationEngine(config, worldMap, animalPositions, new ArrayList<>());
+        IEngine engine = new SimulationEngine(config, worldMap, animalPositions, new ArrayList<>(), null);
 
         //// START SIMULATION ////
 
