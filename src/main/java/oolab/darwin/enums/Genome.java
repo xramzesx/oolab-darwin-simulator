@@ -2,6 +2,7 @@ package oolab.darwin.enums;
 
 import oolab.darwin.Config;
 import oolab.darwin.Utils;
+import oolab.darwin.elements.Animal;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,63 @@ public enum Genome {
             genomes.add(Genome.random());
 
         return genomes;
+    }
+
+
+    public static ArrayList<Genome> evolve(Config config, Animal mother, Animal father) {
+        ArrayList<Genome> genomes = new ArrayList<>();
+
+        //// TYPE STRONGER ////
+
+        Animal stronger, weaker;
+
+        if (mother.energy > father.energy ){
+            stronger = mother;
+            weaker = father;
+        } else {
+            stronger = father;
+            weaker = mother;
+        }
+
+        //// COMBINE PARENT GENOMES ////
+
+        int midPoint = (config.genomeLength * stronger.energy )/ (stronger.energy + weaker.energy);
+
+        boolean strongerStarts = Utils.drawResult(50);
+
+        for (int i = 0; i < midPoint; i++ ) {
+            if (strongerStarts) {
+                genomes.add(stronger.getGenomes().get(i));
+            } else {
+                genomes.add(weaker.getGenomes().get(i));
+            }
+        }
+
+        for (int i = midPoint; i < config.genomeLength; i++ ) {
+            if (strongerStarts) {
+                genomes.add(weaker.getGenomes().get(i));
+            } else {
+                genomes.add(stronger.getGenomes().get(i));
+            }
+        }
+
+        //// MUTATE GENOMES ////
+
+        int mutationQuantity = Utils.getRandomInt( config.minMutationQuantity, config.maxMutationQuantity );
+
+        for (int i = 0; i < mutationQuantity; i++ ) {
+            int index = Utils.getRandomInt(0, config.genomeLength - 1);
+
+            genomes.set(
+                    index,
+                    genomes .get(index)
+                            .randomize()
+            );
+        }
+
+
+        return genomes;
+
     }
 
     public Genome mutate(Config config) {
