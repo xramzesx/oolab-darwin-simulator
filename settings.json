@@ -8,8 +8,12 @@
   "multiplicationEnergy": 10,
   "genomeLength": 5,
   "boundaryVariant": "HELLISH",
-  "mapVariant": "TOXIC",
+  "mapVariant": "NORMAL",
   "mutationVariant": "RANDOMIZED",
   "animalBehaviorVariant": "DEVIATION",
-  "refreshTime": 100
+  "refreshTime": 100,
+  "plantsPerDay": 4,
+  "plantEnergy":5,
+  "minMutationQuantity": 2,
+  "maxMutationQuantity": 6
 }
