@@ -6,7 +6,7 @@ import oolab.darwin.enums.Border;
 
 import java.util.ArrayList;
 
-public interface IMapBoundary extends IPositionObserver {
+public interface IMapBoundary {
     Vector2d lowerLeft();
     Vector2d upperRight();
 

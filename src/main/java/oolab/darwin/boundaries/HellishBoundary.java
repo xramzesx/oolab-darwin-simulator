@@ -41,10 +41,5 @@ public class HellishBoundary extends AbstractBoundary {
             -config.multiplicationEnergy
         );
     }
-
-    @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-
-    }
 }
 

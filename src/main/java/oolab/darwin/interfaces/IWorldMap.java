@@ -9,16 +9,17 @@ import java.util.Map;
 
 public interface IWorldMap {
 
+    void place( IMapElement mapElement, Vector2d prevPosition );
     boolean canMoveTo(Vector2d position);
-    boolean place( IMapElement mapElement, Vector2d prevPosition );
     boolean isOccupied(Vector2d position );
     Object objectAt( Vector2d position );
+    ArrayList<IMapElement> objectsAt( Vector2d position );
 
     IMapBoundary getMapBoundary();
 
     void move();
 
-    ArrayList<IPositionObservable> getObservables();
+    ArrayList<IObservable> getObservables();
 
     Map<Vector2d, IMapElement> getObjects();
 

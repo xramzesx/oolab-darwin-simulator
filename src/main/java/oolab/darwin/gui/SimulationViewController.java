@@ -21,15 +21,16 @@ import oolab.darwin.engines.SimulationEngine;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IMapBoundary;
-import oolab.darwin.interfaces.IPositionObserver;
+import oolab.darwin.interfaces.IObserver;
 import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.maps.ToxicMap;
 import oolab.darwin.maps.WorldMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
-public class SimulationViewController extends Application implements IPositionObserver {
+public class SimulationViewController extends Application implements Runnable, IObserver {
 
     @FXML
     private GridPane simulationGridPane;
@@ -81,7 +82,15 @@ public class SimulationViewController extends Application implements IPositionOb
 
 
         animalPositions = generateAnimalPositions();
-        engine = new SimulationEngine(config, worldMap, animalPositions, this, this);
+        engine = new SimulationEngine(
+                config,
+                worldMap,
+                animalPositions,
+                new ArrayList<>(Arrays.asList(
+                        this
+                )),
+            this
+        );
         engineThread = new Thread(engine);
         engineThread.start();
     }
@@ -138,22 +147,21 @@ public class SimulationViewController extends Application implements IPositionOb
 
     }
 
-    @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        //// TODO: do better api
-//        System.out.println(worldMap.getAnimals());
-//        System.out.println(worldMap.getPlants());
-//        System.out.println(worldMap.getObjects());
-    }
-
     public void handleStartClick() {
-        engine = new SimulationEngine(config, worldMap, animalPositions, this, this);
-        engineThread = new Thread(engine);
-        engineThread.start();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+    }
+
+    @Override
+    public void run() {
+
+    }
+
+    @Override
+    public void signal(IEngine engine) {
 
     }
 }

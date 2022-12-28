@@ -11,5 +11,5 @@
   "mapVariant": "TOXIC",
   "mutationVariant": "RANDOMIZED",
   "animalBehaviorVariant": "DEVIATION",
-  "refreshTime": 1000
+  "refreshTime": 100
 }
