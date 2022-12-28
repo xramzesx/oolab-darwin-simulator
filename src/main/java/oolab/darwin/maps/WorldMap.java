@@ -1,13 +1,10 @@
 package oolab.darwin.maps;
 
 import oolab.darwin.Config;
-import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
-import oolab.darwin.elements.Plant;
 import oolab.darwin.interfaces.IMapBoundary;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class WorldMap extends AbstractWorldMap {

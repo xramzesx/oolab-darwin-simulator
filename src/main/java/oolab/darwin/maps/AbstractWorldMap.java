@@ -149,8 +149,8 @@ public abstract class AbstractWorldMap implements IWorldMap {
                 (a1, a2) -> {
                     if (a1.energy != a2.energy)
                         return a1.energy - a2.energy;
-                    if ( a1.birthdate != a2.birthdate )
-                        return a1.birthdate - a2.birthdate;
+                    if ( a1.birthDate != a2.birthDate )
+                        return a1.birthDate - a2.birthDate;
                     if (a1.getChildren() != a2.getChildren())
                         return a1.getChildren() - a2.getChildren();
 

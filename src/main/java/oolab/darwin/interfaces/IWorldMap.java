@@ -19,8 +19,8 @@ public interface IWorldMap {
     void spawnPlants(boolean isInitial);
 
     void consume( Animal animal, Plant plant );
-    void multiplyAt (Vector2d position, int birthdate);
-
+    void multiplyAt (Vector2d position, int birthDate);
+    void kill (Animal animal, int deathDate);
 
     //// UTILS ////
 

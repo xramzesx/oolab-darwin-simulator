@@ -17,7 +17,7 @@ public class Animal extends AbstractMapElement  {
     public MapDirection direction;
     public int energy;
 
-    public int birthdate = 0;
+    public int birthDate = 0;
     public int deathDate = -1;
 
     private int currentGenome = 0;
@@ -52,11 +52,11 @@ public class Animal extends AbstractMapElement  {
         ArrayList<Genome> genomes,
         Vector2d position,
         int energy,
-        int birthdate
+        int birthDate
     ) {
         this(config, map, genomes, position);
         this.energy = energy;
-        this.birthdate = birthdate;
+        this.birthDate = birthDate;
     }
 
     //// BEHAVIOR ///
@@ -103,7 +103,7 @@ public class Animal extends AbstractMapElement  {
         this.map.place(this, prevPosition);
     }
 
-    public Animal multiply( Animal animal, int birthdate ) {
+    public Animal multiply( Animal animal, int birthDate ) {
 
         int childrenEnergy = config.multiplicationEnergy * 2;
 
@@ -117,7 +117,7 @@ public class Animal extends AbstractMapElement  {
             ),
             this.position,
             childrenEnergy,
-            birthdate
+            birthDate
         );
 
         this.changeEnergy( -config.multiplicationEnergy );
@@ -160,7 +160,9 @@ public class Animal extends AbstractMapElement  {
     }
 
     public AnimalStats getStats( int currentDay ) {
-        return new AnimalStats(this, currentDay );
+        return isDead()
+            ? new AnimalStats(this)
+            : new AnimalStats(this, currentDay );
     }
 
     //// FOR DEBUG ////

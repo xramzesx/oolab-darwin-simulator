@@ -14,8 +14,8 @@ public class AnimalStats {
     Integer eatenPlants;
     Integer children;
 
-    Integer birthdate;
-    Integer deathdate;
+    Integer birthDate;
+    Integer deathDate;
     Integer age;
 
     public AnimalStats (Animal animal) {
@@ -24,16 +24,16 @@ public class AnimalStats {
         this.energy = animal.energy;
         this.eatenPlants = animal.eatenPlants;
         this.children = animal.getChildren();
-        this.birthdate = animal.birthdate;
-        this.deathdate = animal.deathDate;
+        this.birthDate = animal.birthDate;
+        this.deathDate = animal.deathDate;
     }
 
     public AnimalStats( Animal animal, int currentDay ) {
         this(animal);
-        this.age = currentDay - birthdate;
+        this.age = currentDay - birthDate;
     }
 
     public Integer getAge() {
-        return age == null ? deathdate - birthdate : age;
+        return age == null ? deathDate - birthDate : age;
     }
 }
