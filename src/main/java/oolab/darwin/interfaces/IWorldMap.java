@@ -7,6 +7,7 @@ import oolab.darwin.elements.Plant;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public interface IWorldMap {
 
@@ -16,6 +17,8 @@ public interface IWorldMap {
     void move();
 
     void spawnPlants();
+
+    void consume( Animal animal, Plant plant );
 
     //// UTILS ////
 
@@ -33,4 +36,7 @@ public interface IWorldMap {
 
     ArrayList<Animal> getAnimals();
     ArrayList<Plant> getPlants();
+
+    Map<Vector2d, TreeSet<Animal>> getAnimalMap();
+    Map<Vector2d, Plant> getPlantMap();
 }

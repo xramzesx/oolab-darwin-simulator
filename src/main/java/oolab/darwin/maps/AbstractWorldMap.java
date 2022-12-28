@@ -99,6 +99,13 @@ public abstract class AbstractWorldMap implements IWorldMap {
         placePlant(plant);
     }
 
+    @Override
+    public void consume(Animal animal, Plant plant) {
+        animal.eat(plant);
+
+        unplacePlant(plant);
+    }
+
     protected void placePlant( Plant plant ) {
         plantMap.put(plant.position, plant);
     };
@@ -187,6 +194,8 @@ public abstract class AbstractWorldMap implements IWorldMap {
         System.out.println(animalMap);
     }
 
+    //// GETTERS ////
+
     @Override
     public IMapBoundary getMapBoundary() {
         return mapBoundary;
@@ -210,5 +219,14 @@ public abstract class AbstractWorldMap implements IWorldMap {
     @Override
     public ArrayList<Plant> getPlants() {
         return new ArrayList<>( plantMap.values() );
+    }
+
+    @Override
+    public Map<Vector2d, TreeSet<Animal>> getAnimalMap() {
+        return animalMap;
+    }
+    @Override
+    public Map<Vector2d, Plant> getPlantMap() {
+        return plantMap;
     }
 }
