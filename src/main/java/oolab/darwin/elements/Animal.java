@@ -7,6 +7,7 @@ import oolab.darwin.enums.AnimalBehaviorVariant;
 import oolab.darwin.enums.Genome;
 import oolab.darwin.enums.MapDirection;
 import oolab.darwin.interfaces.IWorldMap;
+import oolab.darwin.stats.AnimalStats;
 
 import java.util.ArrayList;
 
@@ -17,11 +18,14 @@ public class Animal extends AbstractMapElement  {
     public int energy;
 
     public int birthdate = 0;
+    public int deathDate = -1;
 
     private int currentGenome = 0;
     private final ArrayList<Genome> genomes;
 
     private int children = 0;
+
+    public int eatenPlants = 0;
 
     //// GLOBALS ////
     private final Config config;
@@ -63,7 +67,7 @@ public class Animal extends AbstractMapElement  {
 
     public void eat( Plant plant ){
         changeEnergy(plant.energy);
-
+        eatenPlants++;
         System.out.println(toString() + " " + this.energy);
     }
 
@@ -149,6 +153,14 @@ public class Animal extends AbstractMapElement  {
 
     public ArrayList<Genome> getGenomes() {
         return genomes;
+    }
+
+    public Genome getGenome() {
+        return genomes.get(currentGenome);
+    }
+
+    public AnimalStats getStats( int currentDay ) {
+        return new AnimalStats(this, currentDay );
     }
 
     //// FOR DEBUG ////
