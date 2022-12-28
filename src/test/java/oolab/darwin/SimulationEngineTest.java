@@ -56,6 +56,7 @@ public class SimulationEngineTest {
         config.mutationVariant = MutationVariant.RANDOMIZED;
         config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
 
+        config.refreshTime = 0;
 
         IMapBoundary mapBoundary = switch (config.boundaryVariant) {
             case EARTH ->   new EarthBoundary(config);
@@ -78,7 +79,7 @@ public class SimulationEngineTest {
 
 
 
-        IEngine engine = new SimulationEngine(config, worldMap, animalPositions, new ArrayList<>(), null);
+        IEngine engine = new SimulationEngine(config, worldMap, animalPositions, new ArrayList<>());
 
         //// START SIMULATION ////
 
