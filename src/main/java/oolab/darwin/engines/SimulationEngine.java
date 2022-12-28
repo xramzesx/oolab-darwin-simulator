@@ -1,11 +1,12 @@
 package oolab.darwin.engines;
 
+import javafx.application.Platform;
 import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Genome;
+import oolab.darwin.gui.SimulationViewController;
 import oolab.darwin.interfaces.IEngine;
-import oolab.darwin.interfaces.IMapBoundary;
 import oolab.darwin.interfaces.IPositionObserver;
 import oolab.darwin.interfaces.IWorldMap;
 
@@ -19,6 +20,7 @@ public class SimulationEngine implements IEngine {
     Config config;
 
     IPositionObserver observer;
+    SimulationViewController app = null;
 
     //// INIT ////
 
@@ -26,11 +28,13 @@ public class SimulationEngine implements IEngine {
         Config config,
         IWorldMap map,
         ArrayList<Vector2d> animalPositions,
-        IPositionObserver observer
+        IPositionObserver observer,
+        SimulationViewController app
     ) {
         this.map = map;
         this.config = config;
         this.observer = observer;
+        this.app = app;
         for ( Vector2d position : animalPositions ) {
             Animal animal = new Animal(
                 this.config,
@@ -84,6 +88,12 @@ public class SimulationEngine implements IEngine {
     public void run() {
         for ( int i = 0; i < config.genomeLength * 5; i++ ) {
             simulateDay();
+            try {
+                Platform.runLater(app::renderGridPane);
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             this.observer.positionChanged(null, null);
         }
     }

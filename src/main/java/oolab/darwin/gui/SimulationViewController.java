@@ -1,0 +1,159 @@
+package oolab.darwin.gui;
+
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import oolab.darwin.Config;
+import oolab.darwin.Utils;
+import oolab.darwin.Vector2d;
+import oolab.darwin.boundaries.EarthBoundary;
+import oolab.darwin.boundaries.HellishBoundary;
+import oolab.darwin.elements.Animal;
+import oolab.darwin.elements.Plant;
+import oolab.darwin.engines.SimulationEngine;
+import oolab.darwin.enums.MapVariant;
+import oolab.darwin.interfaces.IEngine;
+import oolab.darwin.interfaces.IMapBoundary;
+import oolab.darwin.interfaces.IPositionObserver;
+import oolab.darwin.interfaces.IWorldMap;
+import oolab.darwin.maps.ToxicMap;
+import oolab.darwin.maps.WorldMap;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class SimulationViewController extends Application implements IPositionObserver {
+
+    @FXML
+    private GridPane simulationGridPane;
+
+    Config config;
+    IMapBoundary mapBoundary;
+    IWorldMap worldMap;
+    IEngine engine;
+
+    Thread engineThread;
+
+    ArrayList<Vector2d> animalPositions;
+
+    private ArrayList<Vector2d> generateAnimalPositions() {
+        HashSet<Vector2d> positions = new HashSet<>();
+
+        while ( positions.size() < config.initialAnimalQuantity ) {
+            positions.add(
+                    Utils.getRandomVector2d(
+                            this.mapBoundary.lowerLeft(),
+                            this.mapBoundary.upperRight()
+                    )
+            );
+        }
+
+        return new ArrayList<>(positions);
+    }
+
+
+
+    public void initializeView(Config config) {
+        this.config = config;
+        simulationGridPane.setStyle("-fx-background-color: #55c233");
+
+        mapBoundary = switch (config.boundaryVariant) {
+            case EARTH ->   new EarthBoundary(config);
+            case HELLISH -> new HellishBoundary(config);
+        };
+
+
+        worldMap = switch (config.mapVariant) {
+            case NORMAL ->  new WorldMap(config, mapBoundary);
+            case TOXIC ->   new ToxicMap(config, mapBoundary);
+        };
+
+        worldMap = config.mapVariant == MapVariant.NORMAL
+                ? new WorldMap(config, mapBoundary)
+                : new ToxicMap(config, mapBoundary);
+
+
+        animalPositions = generateAnimalPositions();
+        engine = new SimulationEngine(config, worldMap, animalPositions, this, this);
+        engineThread = new Thread(engine);
+        engineThread.start();
+    }
+
+    public void renderGridPane() {
+        int cellWidth = 600 / this.config.mapWidth;
+        int cellHeight  = 600 / this.config.mapHeight;
+
+        simulationGridPane.setGridLinesVisible(false);
+        simulationGridPane.getColumnConstraints().clear();
+        simulationGridPane.getRowConstraints().clear();
+        simulationGridPane.getChildren().clear();
+
+        simulationGridPane.setGridLinesVisible(true);
+        simulationGridPane.setGridLinesVisible(true);
+
+        Label yxLabel = new Label("");
+        simulationGridPane.add(yxLabel, 0, 0, 1, 1);
+        simulationGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
+        simulationGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
+
+        for (int i = 1; i < this.config.mapWidth; i++) {
+            Label label = new Label( "");
+            simulationGridPane.add(label, i, 0, 1, 1);
+            simulationGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
+            GridPane.setHalignment(label, HPos.CENTER);
+        }
+
+        for (int i = 1; i < this.config.mapHeight; i++) {
+            Label label = new Label(  "");
+            simulationGridPane.add(label, 0, i, 1, 1);
+            simulationGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
+            GridPane.setHalignment(label, HPos.CENTER);
+        }
+
+
+        ArrayList<Animal> animals = worldMap.getAnimals();
+        for (int i = 0; i < animals.size(); i++) {
+            if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
+                Pane animal = new Pane();
+                animal.setStyle("-fx-background-color: #964b00");
+                simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
+            }
+       }
+
+        ArrayList<Plant> plants = worldMap.getPlants();
+        for (int i = 0; i < plants.size(); i++) {
+            if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
+                Pane plant = new Pane();
+                plant.setStyle("-fx-background-color: #55c233");
+                simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
+            }
+        }
+
+    }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        //// TODO: do better api
+//        System.out.println(worldMap.getAnimals());
+//        System.out.println(worldMap.getPlants());
+//        System.out.println(worldMap.getObjects());
+    }
+
+    public void handleStartClick() {
+        engine = new SimulationEngine(config, worldMap, animalPositions, this, this);
+        engineThread = new Thread(engine);
+        engineThread.start();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+    }
+}

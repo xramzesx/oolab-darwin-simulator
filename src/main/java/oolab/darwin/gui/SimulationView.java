@@ -69,7 +69,7 @@ public class SimulationView implements Runnable, IPositionObserver{
         System.out.println(config.mapWidth);
         System.out.println(config.mapHeight);
 
-        engine = new SimulationEngine(config, worldMap, animalPositions, this);
+//        engine = new SimulationEngine(config, worldMap, animalPositions, this, this);
 
         //// START SIMULATION ////
 

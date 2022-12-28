@@ -5,13 +5,9 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import oolab.darwin.Config;
@@ -20,10 +16,8 @@ import oolab.darwin.enums.BoundaryVariant;
 import oolab.darwin.enums.MapVariant;
 import oolab.darwin.enums.MutationVariant;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 public class ConfigView extends Application {
@@ -173,7 +167,9 @@ public class ConfigView extends Application {
 
             config.refreshTime = Integer.parseInt(inputRefreshTime.getText());
             labelErrorMessage.setText("");
-            this.run(config);
+
+
+            openSimulationView(config);
         } catch (Exception error) {
             labelErrorMessage.setText("Invalid value " + error.getMessage().toLowerCase());
         }
@@ -187,5 +183,21 @@ public class ConfigView extends Application {
         loadSettingsFromFile(file, "Make sure that selected file is valid");
     }
 
+    public void openSimulationView(Config config) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("SimulationView.fxml"));
+            Parent root = loader.load();
+
+            SimulationViewController controller = loader.getController();
+            controller.initializeView(config);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+    }
 }
 
