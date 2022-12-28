@@ -1,6 +1,7 @@
 package oolab.darwin.gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
@@ -161,14 +162,21 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
     @Override
     public void run() {
+
+        //// TODO: add missing config inputs
+        config.plantsPerDay = 4;
+        config.plantEnergy = 5;
+        config.minMutationQuantity = 2;
+        config.maxMutationQuantity = 6;
+
+
         engine = new SimulationEngine(
-                config,
-                worldMap,
-                animalPositions,
-                new ArrayList<>(Arrays.asList(
-                        this
-                )),
+            config,
+            worldMap,
+            animalPositions,
+            new ArrayList<>(Arrays.asList(
                 this
+            ))
         );
         engineThread = new Thread(engine);
         engineThread.start();
@@ -176,6 +184,8 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
     @Override
     public void signal(IEngine engine) {
+
+        Platform.runLater(this::renderGridPane);
 
         //// example api use: ///
 

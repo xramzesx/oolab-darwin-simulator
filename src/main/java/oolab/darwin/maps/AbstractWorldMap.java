@@ -34,6 +34,111 @@ public abstract class AbstractWorldMap implements IWorldMap {
         this.mapBoundary = mapBoundary;
     }
 
+    @Override
+    public void spawnPlants() {
+        ///// PREPARE AVAILABLE SPACE ////
+
+        Set <Vector2d> nonGreenArea = getNonGreenArea();
+        Set <Vector2d> greenArea = getGreenArea();
+
+        Set <Vector2d> availableInside = new HashSet<>(greenArea);
+        Set <Vector2d> availableOutside = new HashSet<>(nonGreenArea);
+
+        //// REMOVE ALREADY USED POSITIONS ////
+
+        /// TODO: move this part to placePlant/unplacePlant method
+
+        for (Map.Entry<Vector2d, Plant> entry : plantMap.entrySet() ) {
+            Vector2d position = entry.getKey();
+            if ( greenArea.contains(position) )
+                availableInside.remove(position);
+            else
+                availableOutside.remove(position);
+        }
+
+        for (int i = 0; i < config.plantsPerDay; i++ )
+            spawnPlant(availableInside, availableOutside);
+
+    }
+
+    private void spawnPlant(
+            Set<Vector2d> availableInside,
+            Set<Vector2d> availableOutside
+    ) {
+
+        boolean includeInside = availableInside.size() > 0;
+        boolean includeOutside = availableOutside.size() > 0;
+
+        Vector2d position = null;
+
+        if ( !includeInside && !includeOutside )
+            return;
+
+        if ( includeInside ^ includeOutside ) {
+            if (includeInside) {
+                position = Utils.getRandomElement( availableInside );
+                availableInside.remove(position);
+            } else {
+                position = Utils.getRandomElement( availableOutside );
+                availableOutside.remove(position);
+            }
+        }
+
+        if ( includeInside && includeOutside ) {
+            if (Utils.drawResult( 80 )) {
+                position = Utils.getRandomElement( availableInside );
+                availableInside.remove(position);
+            } else {
+                position = Utils.getRandomElement( availableOutside );
+                availableOutside.remove(position);
+            }
+        }
+
+        Plant plant = new Plant(config, position);
+
+        placePlant(plant);
+    }
+
+    @Override
+    public void consume(Animal animal, Plant plant) {
+        animal.eat(plant);
+
+        unplacePlant(plant);
+    }
+
+    @Override
+    public void multiplyAt(Vector2d position, int birthdate) {
+        Set <Animal> animalSet = animalMap.get(position);
+
+        if (animalSet == null)
+            return;
+
+        ArrayList <Animal> animals = new ArrayList<>(animalSet);
+        ArrayList <Animal> children = new ArrayList<>();
+
+        for ( int i = 1; i < animals.size(); i += 2 ) {
+            Animal father = animals.get(i - 1);
+            Animal mother = animals.get(i);
+
+            if (father.isFertile() && mother.isFertile()) {
+                children.add(mother.multiply(father, birthdate));
+            }
+
+        }
+
+        for ( Animal child : children ){
+            place(child, null);
+        }
+    }
+
+    protected void placePlant(Plant plant ) {
+        plantMap.put(plant.position, plant);
+    };
+
+    protected void unplacePlant(Plant plant) {
+        plantMap.remove(plant.position);
+    };
+
     protected void placeAnimal( Animal animal, Vector2d position ) {
         if (!animalMap.containsKey(position))
             animalMap.put(position, new TreeSet<Animal>(
@@ -91,17 +196,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
     }
 
     @Override
-    public boolean isOccupied(Vector2d position) {
-        return this.objects.containsKey(position);
-    }
-
-    @Override
-    public Object objectAt(Vector2d position) {
-        return this.objects.get(position);
-    }
-
-
-    @Override
     public ArrayList<IMapElement> objectsAt(Vector2d position) {
         ArrayList<IMapElement> mapElements = new ArrayList<>();
 
@@ -121,21 +215,9 @@ public abstract class AbstractWorldMap implements IWorldMap {
     public void move() {
         for ( Animal animal : animals )
             animal.move();
-
-        System.out.println(animalMap);
     }
 
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-
-        Object object = objectAt(position);
-        if(object instanceof Plant) {
-            this.objects.remove(object);
-        } else if(object instanceof Animal) {
-            return false;
-        }
-        return true;
-    }
+    //// GETTERS ////
 
     @Override
     public IMapBoundary getMapBoundary() {
@@ -160,5 +242,14 @@ public abstract class AbstractWorldMap implements IWorldMap {
     @Override
     public ArrayList<Plant> getPlants() {
         return new ArrayList<>( plantMap.values() );
+    }
+
+    @Override
+    public Map<Vector2d, TreeSet<Animal>> getAnimalMap() {
+        return animalMap;
+    }
+    @Override
+    public Map<Vector2d, Plant> getPlantMap() {
+        return plantMap;
     }
 }

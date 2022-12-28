@@ -6,23 +6,39 @@ import oolab.darwin.elements.Plant;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public interface IWorldMap {
 
+    //// CONTROLS ///
+
     void place( IMapElement mapElement, Vector2d prevPosition );
-    boolean canMoveTo(Vector2d position);
-    boolean isOccupied(Vector2d position );
-    Object objectAt( Vector2d position );
-    ArrayList<IMapElement> objectsAt( Vector2d position );
-
-    IMapBoundary getMapBoundary();
-
     void move();
 
+    void spawnPlants();
+
+    void consume( Animal animal, Plant plant );
+    void multiplyAt (Vector2d position, int birthdate);
+
+
+    //// UTILS ////
+
+    ArrayList<IMapElement> objectsAt( Vector2d position );
+
+    //// GETTERS ////
+
+    IMapBoundary getMapBoundary();
     ArrayList<IObservable> getObservables();
 
     Map<Vector2d, IMapElement> getObjects();
 
+    Set<Vector2d> getGreenArea();
+    Set<Vector2d> getNonGreenArea();
+
     ArrayList<Animal> getAnimals();
     ArrayList<Plant> getPlants();
+
+    Map<Vector2d, TreeSet<Animal>> getAnimalMap();
+    Map<Vector2d, Plant> getPlantMap();
 }

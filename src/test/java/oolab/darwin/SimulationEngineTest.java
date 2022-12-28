@@ -52,10 +52,16 @@ public class SimulationEngineTest {
         config.genomeLength = 5;
 
         config.boundaryVariant = BoundaryVariant.HELLISH;
-        config.mapVariant = MapVariant.TOXIC;
+        config.mapVariant = MapVariant.NORMAL;
         config.mutationVariant = MutationVariant.RANDOMIZED;
         config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
 
+        config.refreshTime = 0;
+        config.plantsPerDay = 4;
+        config.plantEnergy = 2;
+        config.minMutationQuantity = 0;
+        config.maxMutationQuantity = 4;
+        
 
         IMapBoundary mapBoundary = switch (config.boundaryVariant) {
             case EARTH ->   new EarthBoundary(config);
@@ -78,7 +84,7 @@ public class SimulationEngineTest {
 
 
 
-        IEngine engine = new SimulationEngine(config, worldMap, animalPositions, new ArrayList<>(), null);
+        IEngine engine = new SimulationEngine(config, worldMap, animalPositions, new ArrayList<>());
 
         //// START SIMULATION ////
 
