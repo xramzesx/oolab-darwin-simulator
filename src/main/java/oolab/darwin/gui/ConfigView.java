@@ -140,7 +140,7 @@ public class ConfigView extends Application {
     public void run( Config config ) {
 
         //// TODO: make it multi-thread
-        SimulationView simulationView = new SimulationView(config);
+//        SimulationView simulationView = new SimulationView(config);
 
     }
 
@@ -188,7 +188,7 @@ public class ConfigView extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("SimulationView.fxml"));
             Parent root = loader.load();
 
-            SimulationViewController controller = loader.getController();
+            SimulationView controller = loader.getController();
             controller.initializeView(config);
 
             Stage stage = new Stage();

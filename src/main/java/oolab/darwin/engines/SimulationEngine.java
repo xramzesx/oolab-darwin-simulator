@@ -5,7 +5,7 @@ import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.enums.Genome;
-import oolab.darwin.gui.SimulationViewController;
+import oolab.darwin.gui.SimulationView;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.interfaces.*;
@@ -20,7 +20,7 @@ public class SimulationEngine implements IEngine {
     private final Config config;
 
     private final ArrayList<IObserver> observers = new ArrayList<>();
-    private SimulationViewController app;
+    private SimulationView app;
 
 
     //// INIT ////
@@ -30,7 +30,7 @@ public class SimulationEngine implements IEngine {
         IWorldMap map,
         ArrayList<Vector2d> animalPositions,
         ArrayList<IObserver> observers,
-        SimulationViewController app
+        SimulationView app
     ) {
         this.map = map;
         this.config = config;
