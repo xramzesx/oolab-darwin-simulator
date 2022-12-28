@@ -65,6 +65,14 @@ public class ConfigView extends Application {
     private ToggleGroup mutationVariant;
     @FXML
     private ToggleGroup behaviourVariant;
+    @FXML
+    private TextField inputPlantsPerDay;
+    @FXML
+    private TextField inputMaxMutationQuantity;
+    @FXML
+    private TextField inputMinMutationQuantity;
+    @FXML
+    private TextField inputPlantEnergy;
 
     @FXML
     public void initialize() {
@@ -82,6 +90,10 @@ public class ConfigView extends Application {
         if(config.genomeLength != null) inputGenomeLength.setText(config.genomeLength.toString());
         if(config.multiplicationEnergy != null) inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
         if(config.refreshTime != null) inputRefreshTime.setText(config.refreshTime.toString());
+        if(config.plantsPerDay != null) inputPlantsPerDay.setText(config.plantsPerDay.toString());
+        if(config.plantEnergy != null) inputPlantEnergy.setText(config.plantEnergy.toString());
+        if(config.minMutationQuantity != null) inputMinMutationQuantity.setText(config.minMutationQuantity.toString());
+        if(config.maxMutationQuantity != null) inputMaxMutationQuantity.setText(config.maxMutationQuantity.toString());
 
         if(config.mapVariant != null && config.mapVariant.equals(MapVariant.NORMAL)) {
             radioClassicMap.setSelected(true);
@@ -159,6 +171,10 @@ public class ConfigView extends Application {
             config.stuffedEnergy = Integer.parseInt(inputStuffedEnergy.getText());
             config.multiplicationEnergy = Integer.parseInt(inputMultiplicationEnergy.getText());
             config.genomeLength = Integer.parseInt(inputGenomeLength.getText());
+            config.plantsPerDay = Integer.parseInt(inputPlantsPerDay.getText());
+            config.plantEnergy = Integer.parseInt(inputPlantEnergy.getText());
+            config.minMutationQuantity = Integer.parseInt(inputMinMutationQuantity.getText());
+            config.maxMutationQuantity = Integer.parseInt(inputMaxMutationQuantity.getText());
 
             config.boundaryVariant = radioEarth.isSelected() ? BoundaryVariant.EARTH : BoundaryVariant.HELLISH;
             config.mapVariant = radioClassicMap.isSelected() ? MapVariant.NORMAL : MapVariant.TOXIC;

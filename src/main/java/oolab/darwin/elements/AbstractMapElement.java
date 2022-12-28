@@ -3,8 +3,6 @@ package oolab.darwin.elements;
 import oolab.darwin.Vector2d;
 import oolab.darwin.interfaces.IMapElement;
 
-import java.util.ArrayList;
-
 public abstract class AbstractMapElement implements IMapElement {
     public int energy = 0;
 
@@ -18,10 +16,5 @@ public abstract class AbstractMapElement implements IMapElement {
     @Override
     public Vector2d getPosition() {
         return this.position;
-    }
-
-    @Override
-    public int getEnergy() {
-        return this.energy;
     }
 }

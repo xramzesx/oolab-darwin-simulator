@@ -4,5 +4,4 @@ import oolab.darwin.Vector2d;
 
 public interface IMapElement {
     Vector2d getPosition();
-    int getEnergy();
 }

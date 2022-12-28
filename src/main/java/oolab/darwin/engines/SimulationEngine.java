@@ -8,6 +8,7 @@ import oolab.darwin.enums.Genome;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.interfaces.*;
+import oolab.darwin.stats.AnimalStats;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -48,12 +49,26 @@ public class SimulationEngine implements IEngine {
             map.place(animal, null);
         }
 
+        this.map.spawnPlants(true);
     }
 
     //// STEPS ////
 
-    private void clearCorpse() {
+    private void sunRise() {
+        for (Animal animal : map.getAnimals()) {
+            animal.changeEnergy( -1 );
+        }
+    }
 
+
+    private void clearCorpse() {
+        for ( Animal animal : map.getAnimals() ) {
+            if (animal.isDead()) {
+                map.kill(animal, day);
+            }
+        }
+
+        map.getAnimals().removeIf(Animal::isDead);
     }
 
     private void moveAnimals() {
@@ -79,20 +94,20 @@ public class SimulationEngine implements IEngine {
 
 
     private void multiplyAnimals() {
-        Map<Vector2d, TreeSet<Animal>> animalMap = map.getAnimalMap();
 
-        for ( Vector2d position : animalMap.keySet() ) {
+        ArrayList<Vector2d> positions = new ArrayList<>(map.getAnimalMap().keySet());
+
+        for ( Vector2d position : positions ) {
             map.multiplyAt(position, day);
         }
-
-
     }
 
     private void renewPlants() {
-        this.map.spawnPlants();
+        this.map.spawnPlants(false);
     }
 
     private void simulateDay() {
+        sunRise();
         clearCorpse();
         moveAnimals();
         consumption();
@@ -106,8 +121,8 @@ public class SimulationEngine implements IEngine {
 
         this.signal();
         renewPlants();
-
         day += 1;
+        System.gc();
     }
 
     //// INTERFACE ////
@@ -116,10 +131,10 @@ public class SimulationEngine implements IEngine {
 
     @Override
     public void run() {
-        for ( int i = 0; i < config.genomeLength * 5; i++ ) {
+        while (map.getAnimals().size() > 0)
             simulateDay();
 
-        }
+        System.out.println("[engine] simulation ended");
     }
 
     @Override
@@ -130,6 +145,11 @@ public class SimulationEngine implements IEngine {
     @Override
     public IMapBoundary getMapBoundary() {
         return map.getMapBoundary();
+    }
+
+    @Override
+    public ArrayList<AnimalStats> statsAt(Vector2d position) {
+        return map.statsAt(position, day);
     }
 
     /// OBSERVABLE ///

@@ -23,6 +23,19 @@ public enum MapDirection {
         return vals[ ( this.ordinal() - 1 + vals.length ) % vals.length ];
     }
 
+    public MapDirection flipHorizontal() {
+        return switch (this) {
+            case North      -> South;
+            case NorthEast  -> SouthEast;
+            case East       -> East;
+            case SouthEast  -> NorthEast;
+            case South      -> North;
+            case SouthWest  -> NorthWest;
+            case West       -> West;
+            case NorthWest  -> SouthWest;
+        };
+    }
+
     public MapDirection rotate( Genome genome ) {
         return vals[ (this.ordinal() + genome.ordinal() ) % vals.length ];
     }
