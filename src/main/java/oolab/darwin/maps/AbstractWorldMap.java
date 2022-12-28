@@ -6,8 +6,10 @@ import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.elements.Plant;
 import oolab.darwin.interfaces.*;
+import oolab.darwin.stats.AnimalStats;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements IWorldMap {
 
@@ -220,6 +222,17 @@ public abstract class AbstractWorldMap implements IWorldMap {
             mapElements.add(plantMap.get(position));
 
         return mapElements;
+    }
+
+    @Override
+    public ArrayList<AnimalStats> statsAt(Vector2d position, int currentDay) {
+
+        return objectsAt(position)
+                .stream()
+                .filter(mapElement -> mapElement instanceof Animal)
+                .map(Animal.class::cast)
+                .map(animal -> animal.getStats(currentDay))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

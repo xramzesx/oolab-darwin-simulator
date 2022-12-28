@@ -3,6 +3,7 @@ package oolab.darwin.interfaces;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
 import oolab.darwin.elements.Plant;
+import oolab.darwin.stats.AnimalStats;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,6 +26,7 @@ public interface IWorldMap {
     //// UTILS ////
 
     ArrayList<IMapElement> objectsAt( Vector2d position );
+    ArrayList<AnimalStats> statsAt (Vector2d position, int currentDay);
 
     //// GETTERS ////
 
