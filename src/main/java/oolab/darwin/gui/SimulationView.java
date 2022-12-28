@@ -166,6 +166,9 @@ public class SimulationView extends Application implements Runnable, IObserver {
         //// TODO: add missing config inputs
         config.plantsPerDay = 4;
         config.plantEnergy = 5;
+        config.minMutationQuantity = 2;
+        config.maxMutationQuantity = 6;
+
 
         engine = new SimulationEngine(
             config,

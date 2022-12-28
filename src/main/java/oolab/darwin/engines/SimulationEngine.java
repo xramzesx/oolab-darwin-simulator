@@ -79,6 +79,12 @@ public class SimulationEngine implements IEngine {
 
 
     private void multiplyAnimals() {
+        Map<Vector2d, TreeSet<Animal>> animalMap = map.getAnimalMap();
+
+        for ( Vector2d position : animalMap.keySet() ) {
+            map.multiplyAt(position, day);
+        }
+
 
     }
 
