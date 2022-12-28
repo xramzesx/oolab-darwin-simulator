@@ -3,12 +3,15 @@ package oolab.darwin.engines;
 import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;
+import oolab.darwin.elements.Plant;
 import oolab.darwin.enums.Genome;
 import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.interfaces.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class SimulationEngine implements IEngine {
 
@@ -57,13 +60,23 @@ public class SimulationEngine implements IEngine {
         this.map.move();
     }
 
-    private void resolveConflicts() {
+    private void consumption() {
+        Map<Vector2d, Plant> plantMap = map.getPlantMap();
+        Map<Vector2d, TreeSet<Animal>> animalMap = map.getAnimalMap();
 
+        for (Map.Entry<Vector2d, TreeSet<Animal>> entry : animalMap.entrySet()) {
+            Vector2d position = entry.getKey();
+            Animal animal = entry.getValue().first();
+
+            if ( plantMap.containsKey(position) ) {
+                map.consume(
+                    animal,
+                    plantMap.get(position)
+                );
+            }
+        }
     }
 
-    private void resolveConflict( Vector2d position ) {
-
-    }
 
     private void multiplyAnimals() {
 
@@ -76,8 +89,16 @@ public class SimulationEngine implements IEngine {
     private void simulateDay() {
         clearCorpse();
         moveAnimals();
-        resolveConflicts();
+        consumption();
         multiplyAnimals();
+
+        try {
+            Thread.sleep(this.config.refreshTime);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.signal();
         renewPlants();
     }
 
@@ -89,12 +110,7 @@ public class SimulationEngine implements IEngine {
     public void run() {
         for ( int i = 0; i < config.genomeLength * 5; i++ ) {
             simulateDay();
-            try {
-                 Thread.sleep(this.config.refreshTime);
-            } catch (InterruptedException e) {
-                 throw new RuntimeException(e);
-            }
-            this.signal();
+
         }
     }
 
