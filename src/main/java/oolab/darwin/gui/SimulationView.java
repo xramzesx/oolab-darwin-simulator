@@ -162,6 +162,11 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
     @Override
     public void run() {
+
+        //// TODO: add missing config inputs
+        config.plantsPerDay = 4;
+        config.plantEnergy = 5;
+
         engine = new SimulationEngine(
             config,
             worldMap,

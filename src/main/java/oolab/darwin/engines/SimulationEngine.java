@@ -70,7 +70,7 @@ public class SimulationEngine implements IEngine {
     }
 
     private void renewPlants() {
-
+        this.map.spawnPlants();
     }
 
     private void simulateDay() {
