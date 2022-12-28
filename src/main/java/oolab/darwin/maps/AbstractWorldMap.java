@@ -106,7 +106,32 @@ public abstract class AbstractWorldMap implements IWorldMap {
         unplacePlant(plant);
     }
 
-    protected void placePlant( Plant plant ) {
+    @Override
+    public void multiplyAt(Vector2d position, int birthdate) {
+        Set <Animal> animalSet = animalMap.get(position);
+
+        if (animalSet == null)
+            return;
+
+        ArrayList <Animal> animals = new ArrayList<>(animalSet);
+        ArrayList <Animal> children = new ArrayList<>();
+
+        for ( int i = 1; i < animals.size(); i += 2 ) {
+            Animal father = animals.get(i - 1);
+            Animal mother = animals.get(i);
+
+            if (father.isFertile() && mother.isFertile()) {
+                children.add(mother.multiply(father, birthdate));
+            }
+
+        }
+
+        for ( Animal child : children ){
+            place(child, null);
+        }
+    }
+
+    protected void placePlant(Plant plant ) {
         plantMap.put(plant.position, plant);
     };
 
@@ -190,8 +215,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
     public void move() {
         for ( Animal animal : animals )
             animal.move();
-
-        System.out.println(animalMap);
     }
 
     //// GETTERS ////

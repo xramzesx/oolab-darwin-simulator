@@ -45,8 +45,6 @@ public class WorldMap extends AbstractWorldMap {
         super(config, mapBoundary);
 
         prepareArea();
-
-        System.out.println(greenArea);
     }
 
 
