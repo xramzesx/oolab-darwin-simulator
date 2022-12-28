@@ -4,6 +4,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
@@ -39,13 +42,21 @@ public class SimulationView extends Application implements Runnable, IObserver {
     private Label labelAnimals;
     @FXML
     private Label labelPlants;
+    @FXML
+    private Label labelDays;
+    @FXML
+    private LineChart<?, ?> lineChart;
+    @FXML
+    private NumberAxis xAxis;
     private Config config;
     private IMapBoundary mapBoundary;
     private IWorldMap worldMap;
-    private IEngine engine;
+    private SimulationEngine engine;
     private Thread engineThread;
     private ArrayList<Vector2d> animalPositions;
     public boolean isThreadRunning = true;
+    public XYChart.Series animalSeries = new XYChart.Series();
+    public XYChart.Series plantSeries = new XYChart.Series();
 
     private ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
@@ -65,6 +76,12 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
 
     public void initializeView(Config config) {
+
+        /// LINE CHART SETTINGS ///
+        lineChart.setCreateSymbols(false);
+        animalSeries.setName("Animal count");
+        plantSeries.setName("Plant count");
+
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #55c233");
 
@@ -88,6 +105,8 @@ public class SimulationView extends Application implements Runnable, IObserver {
     public void renderGridPane() {
         int cellWidth = 600 / this.config.mapWidth;
         int cellHeight  = 600 / this.config.mapHeight;
+
+        labelDays.setText("Day: " + this.engine.day);
 
         simulationGridPane.setGridLinesVisible(false);
         simulationGridPane.getColumnConstraints().clear();
@@ -119,6 +138,7 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
         ArrayList<Animal> animals = worldMap.getAnimals();
         labelAnimals.setText("Animal count: " + animals.size());
+        animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size()));
         for (int i = 0; i < animals.size(); i++) {
             if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
                 Pane animal = new Pane();
@@ -129,6 +149,7 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
         ArrayList<Plant> plants = worldMap.getPlants();
         labelPlants.setText("Plant count: " + plants.size());
+        plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size()));
         for (int i = 0; i < plants.size(); i++) {
             if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
                 Pane plant = new Pane();
@@ -137,6 +158,12 @@ public class SimulationView extends Application implements Runnable, IObserver {
             }
         }
 
+        if (animalSeries.getData().size() > 10) {
+            animalSeries.getData().remove(0);
+            plantSeries.getData().remove(0);
+        }
+
+        lineChart.getData().addAll(animalSeries, plantSeries);
     }
 
     public void handlePauseClick() {

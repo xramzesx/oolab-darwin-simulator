@@ -106,6 +106,8 @@ public class SimulationEngine implements IEngine {
 
         this.signal();
         renewPlants();
+
+        day += 1;
     }
 
     //// INTERFACE ////
