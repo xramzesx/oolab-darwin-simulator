@@ -129,6 +129,10 @@ public class Animal extends AbstractMapElement  {
         return child;
     }
 
+    public void kill (int deathDate) {
+        this.deathDate = deathDate;
+    }
+
     //// HEALTH ////
 
 

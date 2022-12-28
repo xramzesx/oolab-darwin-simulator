@@ -53,8 +53,21 @@ public class SimulationEngine implements IEngine {
 
     //// STEPS ////
 
-    private void clearCorpse() {
+    private void sunRise() {
+        for (Animal animal : map.getAnimals()) {
+            animal.changeEnergy( -1 );
+        }
+    }
 
+
+    private void clearCorpse() {
+        for ( Animal animal : map.getAnimals() ) {
+            if (animal.isDead()) {
+                map.kill(animal, day);
+            }
+        }
+
+        map.getAnimals().removeIf(Animal::isDead);
     }
 
     private void moveAnimals() {
@@ -93,6 +106,7 @@ public class SimulationEngine implements IEngine {
     }
 
     private void simulateDay() {
+        sunRise();
         clearCorpse();
         moveAnimals();
         consumption();

@@ -196,7 +196,14 @@ public abstract class AbstractWorldMap implements IWorldMap {
         if ( mapElement instanceof Plant ) {
             Plant plant = (Plant) mapElement;
         }
+    }
 
+    @Override
+    public void kill(Animal animal, int deathDate ) {
+
+        animal.kill(deathDate);
+
+        unplaceAnimal(animal, animal.position);
     }
 
     @Override
