@@ -62,6 +62,8 @@ public class Animal extends AbstractMapElement  {
 
     public void eat( Plant plant ){
         changeEnergy(plant.energy);
+
+        System.out.println(toString() + " " + this.energy);
     }
 
     public void move() {
@@ -96,11 +98,30 @@ public class Animal extends AbstractMapElement  {
         this.map.place(this, prevPosition);
     }
 
-    public Animal multiply( Animal animal ) {
-        //// TODO: add birth year
-//        Animal child = new Animal(  )
+    public Animal multiply( Animal animal, int birthdate ) {
 
-        return null;
+        int childrenEnergy = config.multiplicationEnergy * 2;
+
+        Animal child = new Animal(
+            config,
+            map,
+            Genome.evolve(
+                config,
+                this,
+                animal
+            ),
+            this.position,
+            childrenEnergy,
+            birthdate
+        );
+
+        this.changeEnergy( -config.multiplicationEnergy );
+        animal.changeEnergy( -config.multiplicationEnergy );
+
+        this.children++;
+        animal.children++;
+
+        return child;
     }
 
     //// HEALTH ////
@@ -109,6 +130,10 @@ public class Animal extends AbstractMapElement  {
     public boolean isDead() {
         return this.energy <= 0;
     }
+
+    public boolean isStuffed() { return this.energy >= this.config.stuffedEnergy; };
+
+    public boolean isFertile() { return this.isStuffed() && this.energy >= this.config.multiplicationEnergy; }
 
     public void changeEnergy( int difference ) {
         this.energy = Math.max( this.energy + difference, 0 );
@@ -121,6 +146,9 @@ public class Animal extends AbstractMapElement  {
         return children;
     }
 
+    public ArrayList<Genome> getGenomes() {
+        return genomes;
+    }
 
     //// FOR DEBUG ////
 
