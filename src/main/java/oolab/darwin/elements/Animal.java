@@ -60,6 +60,10 @@ public class Animal extends AbstractMapElement  {
 
     }
 
+    public void eat( Plant plant ){
+        changeEnergy(plant.energy);
+    }
+
     public void move() {
         if (
             config.animalBehaviorVariant == AnimalBehaviorVariant.DEVIATION
@@ -90,8 +94,6 @@ public class Animal extends AbstractMapElement  {
         //// PLACE ////
 
         this.map.place(this, prevPosition);
-
-        /// TODO: interact with map like in previous project
     }
 
     public Animal multiply( Animal animal ) {
@@ -102,6 +104,7 @@ public class Animal extends AbstractMapElement  {
     }
 
     //// HEALTH ////
+
 
     public boolean isDead() {
         return this.energy <= 0;
