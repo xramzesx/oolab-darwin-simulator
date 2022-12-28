@@ -84,7 +84,7 @@ public class SimulationView extends Application implements Runnable, IObserver {
         Platform.runLater(() -> lineChart.getData().addAll(animalSeries, plantSeries));
 
         this.config = config;
-        simulationGridPane.setStyle("-fx-background-color: #55c233");
+        simulationGridPane.setStyle("-fx-background-color: #5fc314");
 
         //// PREPARING SIMULATION ////
 
@@ -165,7 +165,7 @@ public class SimulationView extends Application implements Runnable, IObserver {
         for (int i = 0; i < plants.size(); i++) {
             if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
                 Pane plant = new Pane();
-                plant.setStyle("-fx-background-color: #55c233");
+                plant.setStyle("-fx-background-color: #1f6d04");
                 simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
             }
         }
