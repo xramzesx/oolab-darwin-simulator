@@ -34,6 +34,79 @@ public abstract class AbstractWorldMap implements IWorldMap {
         this.mapBoundary = mapBoundary;
     }
 
+    @Override
+    public void spawnPlants() {
+        ///// PREPARE AVAILABLE SPACE ////
+
+        Set <Vector2d> nonGreenArea = getNonGreenArea();
+        Set <Vector2d> greenArea = getGreenArea();
+
+        Set <Vector2d> availableInside = new HashSet<>(greenArea);
+        Set <Vector2d> availableOutside = new HashSet<>(nonGreenArea);
+
+        //// REMOVE ALREADY USED POSITIONS ////
+
+        /// TODO: move this part to placePlant/unplacePlant method
+
+        for (Map.Entry<Vector2d, Plant> entry : plantMap.entrySet() ) {
+            Vector2d position = entry.getKey();
+            if ( greenArea.contains(position) )
+                availableInside.remove(position);
+            else
+                availableOutside.remove(position);
+        }
+
+        for (int i = 0; i < config.plantsPerDay; i++ )
+            spawnPlant(availableInside, availableOutside);
+
+    }
+
+    private void spawnPlant(
+            Set<Vector2d> availableInside,
+            Set<Vector2d> availableOutside
+    ) {
+
+        boolean includeInside = availableInside.size() > 0;
+        boolean includeOutside = availableOutside.size() > 0;
+
+        Vector2d position = null;
+
+        if ( !includeInside && !includeOutside )
+            return;
+
+        if ( includeInside ^ includeOutside ) {
+            if (includeInside) {
+                position = Utils.getRandomElement( availableInside );
+                availableInside.remove(position);
+            } else {
+                position = Utils.getRandomElement( availableOutside );
+                availableOutside.remove(position);
+            }
+        }
+
+        if ( includeInside && includeOutside ) {
+            if (Utils.drawResult( 80 )) {
+                position = Utils.getRandomElement( availableInside );
+                availableInside.remove(position);
+            } else {
+                position = Utils.getRandomElement( availableOutside );
+                availableOutside.remove(position);
+            }
+        }
+
+        Plant plant = new Plant(config, position);
+
+        placePlant(plant);
+    }
+
+    protected void placePlant( Plant plant ) {
+        plantMap.put(plant.position, plant);
+    };
+
+    protected void unplacePlant(Plant plant) {
+        plantMap.remove(plant.position);
+    };
+
     protected void placeAnimal( Animal animal, Vector2d position ) {
         if (!animalMap.containsKey(position))
             animalMap.put(position, new TreeSet<Animal>(
