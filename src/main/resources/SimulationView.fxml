@@ -29,7 +29,7 @@
                </children></Pane>
             <Pane prefHeight="455.0" prefWidth="197.0">
                <children>
-                  <Button fx:id="buttonPause" layoutX="14.0" layoutY="252.0" mnemonicParsing="false" onAction="#handlePauseClick" style="-fx-background-color: #ff605C;" text="Pause" textFill="WHITE">
+                  <Button fx:id="buttonPause" layoutX="13.0" layoutY="266.0" mnemonicParsing="false" onAction="#handlePauseClick" style="-fx-background-color: #ff605C;" text="Pause" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -39,7 +39,7 @@
                   <Label fx:id="labelPlants" layoutX="14.0" layoutY="48.0" text="Plant count:" />
                   <Label fx:id="labelPlants1" layoutX="14.0" layoutY="81.0" text="Specific informations:" />
                   <Line endX="87.0" layoutX="105.0" layoutY="72.0" startX="-100.0" />
-                  <Label fx:id="labelPlants11" layoutX="14.0" layoutY="98.0" text="(Pause simulation and select)" />
+                  <Label fx:id="labelAnimalInfo" layoutX="14.0" layoutY="98.0" text="(Pause simulation and select)" />
                </children>
             </Pane>
          </children>
