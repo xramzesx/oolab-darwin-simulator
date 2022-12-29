@@ -21,7 +21,7 @@ public class SimulationEngine implements IEngine {
     private final IWorldMap map;
     private final Config config;
 
-    private final ArrayList<IObserver> observers = new ArrayList<>();
+    private final ArrayList<IObserver<IEngine>> observers = new ArrayList<>();
 
 
     //// INIT ////
@@ -30,12 +30,12 @@ public class SimulationEngine implements IEngine {
         Config config,
         IWorldMap map,
         ArrayList<Vector2d> animalPositions,
-        ArrayList<IObserver> observers
+        ArrayList<IObserver<IEngine>> observers
     ) {
         this.map = map;
         this.config = config;
 
-        for (IObserver observer: observers)
+        for (IObserver<IEngine> observer: observers)
             subscribe(observer);
 
         for ( Vector2d position : animalPositions ) {
@@ -166,7 +166,7 @@ public class SimulationEngine implements IEngine {
 
     @Override
     public void signal() {
-        for (IObserver observer : observers )
+        for (IObserver<IEngine> observer : observers )
             observer.signal(this);
     }
 }

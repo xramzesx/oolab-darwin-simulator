@@ -4,7 +4,7 @@ import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IGuiElement;
 import oolab.darwin.interfaces.IMapElement;
 
-public class FieldGuiElement implements IGuiElement {
+public class FieldGuiElement implements IGuiElement <IEngine> {
     @Override
     public void signal(IEngine engine) {
 
