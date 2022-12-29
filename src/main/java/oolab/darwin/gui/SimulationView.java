@@ -188,14 +188,14 @@ public class SimulationView extends Application implements Runnable, IObserver {
     private void showSpecificInformation() {
         if(selectedAnimal != null) {
             AnimalStats stats = selectedAnimal.getStats(this.engine.day);
-            labelAnimalInfo.setText(
-                "\nIs alive: " +(stats.deathDate < 0 ? "yes" : "RIP") +
+            labelAnimalInfo.setText("Is alive: " +(stats.deathDate < 0 ? "yes" : "RIP") +
                 "\nGenomes: " + stats.genomes +
                 "\nCurrent genome: " + stats.currentGenome +
                 "\nEnergy: " + stats.energy  +
                 "\nPlants eated: " + stats.eatenPlants +
                 "\nChildren: " + stats.children +
                 "\nDays survived: " + stats.getAge() +
+                "\nBirth day: " + stats.birthDate +
                 "\nDied on day: " + (stats.deathDate < 0 ? "-" : stats.deathDate));
         }
     }
