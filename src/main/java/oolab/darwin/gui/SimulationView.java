@@ -138,28 +138,6 @@ public class SimulationView extends Application implements Runnable, IObserver {
             GridPane.setHalignment(label, HPos.CENTER);
         }
 
-
-        ArrayList<Animal> animals = worldMap.getAnimals();
-        labelAnimals.setText("Animal count: " + animals.size());
-        Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
-
-        for (int i = 0; i < animals.size(); i++) {
-            if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
-                Pane animal = new Pane();
-                animal.setId(i + "");
-                animal.setOnMouseClicked(event -> {
-                   selectedAnimalId = Integer.parseInt(animal.getId());
-                   selectedAnimal = animals.get(selectedAnimalId);
-                   showSpecificInformation();
-                   renderGridPane();
-                });
-                animal.setStyle("-fx-background-color: #964b00;" +
-                        "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
-
-                simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
-            }
-       }
-
         ArrayList<Plant> plants = worldMap.getPlants();
         labelPlants.setText("Plant count: " + plants.size());
         Platform.runLater(() ->   plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
@@ -172,6 +150,27 @@ public class SimulationView extends Application implements Runnable, IObserver {
             }
         }
 
+        ArrayList<Animal> animals = worldMap.getAnimals();
+        labelAnimals.setText("Animal count: " + animals.size());
+        Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
+
+        for (int i = 0; i < animals.size(); i++) {
+            if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
+                Pane animal = new Pane();
+                animal.setId(i + "");
+                animal.setOnMouseClicked(event -> {
+                    selectedAnimalId = Integer.parseInt(animal.getId());
+                    selectedAnimal = animals.get(selectedAnimalId);
+                    showSpecificInformation();
+                    renderGridPane();
+                });
+                animal.setStyle("-fx-background-color: " + getAnimalColor(animals.get(i).energy) + ";" +
+                        "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
+
+                simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
+            }
+        }
+
         Platform.runLater(() -> {
             if (animalSeries.getData().size() > 10) {
                 animalSeries.getData().remove(0);
@@ -181,6 +180,18 @@ public class SimulationView extends Application implements Runnable, IObserver {
 
         showSpecificInformation();
 
+    }
+
+    public String getAnimalColor(Integer energy) {
+      if(energy < 2) {
+          return "#d8cbc4";
+      } else if (energy < 5) {
+          return "#a08679";
+      } else if (energy < 10) {
+          return "#765341";
+      } else {
+          return "#4c3228";
+      }
     }
 
     private void showSpecificInformation() {
