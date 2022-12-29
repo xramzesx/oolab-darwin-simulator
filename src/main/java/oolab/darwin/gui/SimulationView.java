@@ -148,12 +148,10 @@ public class SimulationView extends Application implements Runnable, IObserver {
                 Pane animal = new Pane();
                 animal.setId(i + "");
                 animal.setOnMouseClicked(event -> {
-                   if(!isThreadRunning) {
-                       selectedAnimalId = Integer.parseInt(animal.getId());
-                       selectedAnimal = animals.get(selectedAnimalId);
-                       showSpecificInformation();
-                       renderGridPane();
-                   }
+                   selectedAnimalId = Integer.parseInt(animal.getId());
+                   selectedAnimal = animals.get(selectedAnimalId);
+                   showSpecificInformation();
+                   renderGridPane();
                 });
                 animal.setStyle("-fx-background-color: #964b00;" +
                         "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
