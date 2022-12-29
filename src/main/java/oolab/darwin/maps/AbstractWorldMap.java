@@ -157,12 +157,11 @@ public abstract class AbstractWorldMap implements IWorldMap {
                     if (a1.getChildren() != a2.getChildren())
                         return a1.getChildren() - a2.getChildren();
 
-                    return a1 == a2 ? 0 : Utils.getRandomInt(0,1) * 2 - 1;
+                    return a1.hashCode() - a2.hashCode();
                 }
             ));
 
         animalMap.get(position).add(animal);
-
     }
 
     protected void unplaceAnimal( Animal animal, Vector2d position ) {

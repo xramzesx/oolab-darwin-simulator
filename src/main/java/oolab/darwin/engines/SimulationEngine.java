@@ -107,6 +107,7 @@ public class SimulationEngine implements IEngine {
     }
 
     private void simulateDay() {
+        day++;
         sunRise();
         clearCorpse();
         moveAnimals();
@@ -121,7 +122,6 @@ public class SimulationEngine implements IEngine {
 
         this.signal();
         renewPlants();
-        day += 1;
         System.gc();
     }
 
