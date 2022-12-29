@@ -19,7 +19,7 @@ public enum MapDirection {
         return vals[ ( this.ordinal() + 1 ) % vals.length ];
     }
 
-    public MapDirection previous() {
+    public MapDirection prev() {
         return vals[ ( this.ordinal() - 1 + vals.length ) % vals.length ];
     }
 
