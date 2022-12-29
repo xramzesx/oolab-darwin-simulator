@@ -151,6 +151,10 @@ public class Animal extends AbstractMapElement  {
 
     //// GETTERS ////
 
+    public int getAge( int currentDay) {
+        return currentDay - birthDate;
+    }
+
     public int getChildren() {
         return children;
     }

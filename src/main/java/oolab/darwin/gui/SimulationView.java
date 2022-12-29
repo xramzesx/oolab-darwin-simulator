@@ -28,6 +28,7 @@ import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.maps.ToxicMap;
 import oolab.darwin.maps.WorldMap;
 import oolab.darwin.stats.AnimalStats;
+import oolab.darwin.stats.EngineStats;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -248,12 +249,21 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     @Override
     public void signal(IEngine engine) {
-
+        
         Platform.runLater(this::renderGridPane);
 
         //// example api use: ///
 
         System.out.println(engine.getWorldMap());
+
+        EngineStats engineStats = engine.getStats();
+
+        System.out.println("ES[animalsQuantity]\t" + engineStats.animalsQuantity);
+        System.out.println("ES[plantsQuantity]\t" + engineStats.plantsQuantity);
+        System.out.println("ES[avgLifeSpan]\t" + engineStats.avgLifeSpan);
+        System.out.println("ES[avgAnimalEnergy]\t" + engineStats.avgAnimalEnergy);
+        System.out.println("ES[freeFieldsQuantity]\t" + engineStats.freeFieldsQuantity);
+        System.out.println("ES[mostPopularGenotype]\t" + engineStats.mostPopularGenotype);
 
         /// engine.getMapBoundary();
     }

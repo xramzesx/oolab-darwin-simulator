@@ -9,6 +9,7 @@ import oolab.darwin.interfaces.IEngine;
 import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.interfaces.*;
 import oolab.darwin.stats.AnimalStats;
+import oolab.darwin.stats.EngineStats;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -150,6 +151,13 @@ public class SimulationEngine implements IEngine {
     @Override
     public ArrayList<AnimalStats> statsAt(Vector2d position) {
         return map.statsAt(position, day);
+    }
+
+    //// STATISTICS ////
+
+    @Override
+    public EngineStats getStats() {
+        return new EngineStats(this);
     }
 
     /// OBSERVABLE ///

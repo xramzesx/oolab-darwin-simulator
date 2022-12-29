@@ -2,6 +2,7 @@ package oolab.darwin.interfaces;
 
 import oolab.darwin.Vector2d;
 import oolab.darwin.stats.AnimalStats;
+import oolab.darwin.stats.EngineStats;
 
 import java.util.ArrayList;
 
@@ -15,5 +16,7 @@ public interface IEngine extends Runnable, IObservable{
     //// STATISTICS ////
 
     ArrayList<AnimalStats> statsAt(Vector2d position);
+
+    EngineStats getStats();
 
 }
