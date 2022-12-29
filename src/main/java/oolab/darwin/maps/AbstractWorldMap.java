@@ -230,13 +230,24 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     @Override
     public ArrayList<AnimalStats> statsAt(Vector2d position, int currentDay) {
+        ArrayList<AnimalStats> result = new ArrayList<>();
 
-        return objectsAt(position)
+        ///// ALIVE ANIMALS /////
+
+        result.addAll(objectsAt(position)
                 .stream()
                 .filter(mapElement -> mapElement instanceof Animal)
                 .map(Animal.class::cast)
                 .map(animal -> animal.getStats(currentDay))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toCollection(ArrayList::new))
+        );
+
+        ///// DEATH ANIMALS /////
+
+        if (deathMap.containsKey(position))
+            result.addAll(deathMap.get(position));
+
+        return result;
     }
 
     @Override
