@@ -142,20 +142,7 @@ public class ConfigView extends Application {
         } catch (Exception error) {
             error.printStackTrace();
         }
-
-
-        //// TODO: make it multi-thread
-        /// this line below is only for temporary development purpose
-
     }
-
-    public void run( Config config ) {
-
-        //// TODO: make it multi-thread
-//        SimulationView simulationView = new SimulationView(config);
-
-    }
-
 
     public void handleStartSimulation(ActionEvent e) {
         try {
@@ -208,6 +195,7 @@ public class ConfigView extends Application {
             controller.initializeView(config);
 
             Stage stage = new Stage();
+            stage.setOnCloseRequest(e -> controller.closeWindow());
             stage.setTitle("Simulation");
             stage.setScene(new Scene(root));
             stage.setResizable(false);

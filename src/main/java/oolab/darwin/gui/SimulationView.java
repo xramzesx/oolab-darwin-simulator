@@ -2,6 +2,7 @@ package oolab.darwin.gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.chart.LineChart;
@@ -49,6 +50,14 @@ public class SimulationView extends Application implements Runnable, IObserver <
     private Label labelAnimalInfo;
     @FXML
     private LineChart<?, ?> lineChart;
+    @FXML
+    private Label labelAvgAge;
+    @FXML
+    private Label labelAvgEnergy;
+    @FXML
+    private Label labelEmptySpaces;
+    @FXML
+    private Label labelMostPopularGenotype;
     private Config config;
     private IMapBoundary mapBoundary;
     private IWorldMap worldMap;
@@ -60,6 +69,8 @@ public class SimulationView extends Application implements Runnable, IObserver <
     public XYChart.Series plantSeries = new XYChart.Series();
     public Animal selectedAnimal;
     public Integer selectedAnimalId = -1;
+    int cellWidth = 0;
+    int cellHeight= 0;
 
     private ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
@@ -76,10 +87,11 @@ public class SimulationView extends Application implements Runnable, IObserver <
         return new ArrayList<>(positions);
     }
 
-
+    public void closeWindow() {
+        this.engineThread.interrupt();
+    }
 
     public void initializeView(Config config) {
-
         /// LINE CHART SETTINGS ///
         lineChart.setCreateSymbols(false);
         animalSeries.setName("Animal count");
@@ -88,6 +100,9 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #5fc314");
+
+        cellWidth = 600 / this.config.mapWidth;
+        cellHeight  = 600 / this.config.mapHeight;
 
         //// PREPARING SIMULATION ////
 
@@ -102,24 +117,12 @@ public class SimulationView extends Application implements Runnable, IObserver <
             case TOXIC ->   new ToxicMap(config, mapBoundary);
         };
 
+        generateMapArea();
         animalPositions = generateAnimalPositions();
         this.run();
     }
 
-    public void renderGridPane() {
-        int cellWidth = 600 / this.config.mapWidth;
-        int cellHeight  = 600 / this.config.mapHeight;
-
-        labelDays.setText("Day: " + this.engine.day);
-
-        simulationGridPane.setGridLinesVisible(false);
-        simulationGridPane.getColumnConstraints().clear();
-        simulationGridPane.getRowConstraints().clear();
-        simulationGridPane.getChildren().clear();
-
-        simulationGridPane.setGridLinesVisible(true);
-        simulationGridPane.setGridLinesVisible(true);
-
+    private void generateMapArea() {
         Label yxLabel = new Label("");
         simulationGridPane.add(yxLabel, 0, 0, 1, 1);
         simulationGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
@@ -138,10 +141,11 @@ public class SimulationView extends Application implements Runnable, IObserver <
             simulationGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
             GridPane.setHalignment(label, HPos.CENTER);
         }
+    }
 
+    private void generatePlants() {
         ArrayList<Plant> plants = worldMap.getPlants();
-        labelPlants.setText("Plant count: " + plants.size());
-        Platform.runLater(() ->   plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
+        Platform.runLater(() -> plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
 
         for (int i = 0; i < plants.size(); i++) {
             if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
@@ -150,9 +154,10 @@ public class SimulationView extends Application implements Runnable, IObserver <
                 simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
             }
         }
+    }
 
+    private void generateAnimals() {
         ArrayList<Animal> animals = worldMap.getAnimals();
-        labelAnimals.setText("Animal count: " + animals.size());
         Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
 
         for (int i = 0; i < animals.size(); i++) {
@@ -171,16 +176,35 @@ public class SimulationView extends Application implements Runnable, IObserver <
                 simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
             }
         }
+    }
 
+    private void generateEngineStats() {
+        labelDays.setText("Day: " + this.engine.day);
+        labelAnimals.setText("Animal count: " +this.engine.getStats().animalsQuantity);
+        labelPlants.setText("Plant count: " + this.engine.getStats().plantsQuantity);
+        labelEmptySpaces.setText("Empty spaces count: " + this.engine.getStats().freeFieldsQuantity);
+        labelMostPopularGenotype.setText(this.engine.getStats().mostPopularGenotype + "");
+        labelAvgEnergy.setText("Average animal energy: " + this.engine.getStats().avgAnimalEnergy);
+        labelAvgAge.setText("Average animal age: " + this.engine.getStats().avgLifeSpan);
+    }
+
+    public void renderGridPane() {
+        simulationGridPane.setGridLinesVisible(false);
+        simulationGridPane.getChildren().clear();
+        simulationGridPane.setGridLinesVisible(true);
+
+        generatePlants();
+        generateAnimals();
+        generateEngineStats();
+        showSpecificInformation();
+
+        // Add new data to line chart
         Platform.runLater(() -> {
             if (animalSeries.getData().size() > 10) {
                 animalSeries.getData().remove(0);
                 plantSeries.getData().remove(0);
             }
         });
-
-        showSpecificInformation();
-
     }
 
     public String getAnimalColor(Integer energy) {
@@ -227,14 +251,10 @@ public class SimulationView extends Application implements Runnable, IObserver <
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-
-    }
+    public void start(Stage primaryStage) throws Exception {}
 
     @Override
     public void run() {
-
-
         engine = new SimulationEngine(
             config,
             worldMap,
