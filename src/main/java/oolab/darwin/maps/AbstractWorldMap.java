@@ -157,12 +157,11 @@ public abstract class AbstractWorldMap implements IWorldMap {
                     if (a1.getChildren() != a2.getChildren())
                         return a1.getChildren() - a2.getChildren();
 
-                    return a1 == a2 ? 0 : Utils.getRandomInt(0,1) * 2 - 1;
+                    return a1.hashCode() - a2.hashCode();
                 }
             ));
 
         animalMap.get(position).add(animal);
-
     }
 
     protected void unplaceAnimal( Animal animal, Vector2d position ) {
@@ -208,6 +207,9 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
         deathMap.computeIfAbsent(animal.position, k -> new ArrayList<>());
         deathMap.get(animal.position).add(animal.getStats(deathDate));
+
+        lifeSpanSum += animal.getAge(deathDate);
+        lifeSpanCount++;
 
         unplaceAnimal(animal, animal.position);
     }
@@ -257,6 +259,23 @@ public abstract class AbstractWorldMap implements IWorldMap {
     }
 
     //// GETTERS ////
+
+    /// STATISTICS ///
+
+    @Override
+    public Integer getTotalFields() {
+        return config.mapWidth * config.mapHeight;
+    }
+
+    protected Integer lifeSpanSum = 0;
+    protected Integer lifeSpanCount = 0;
+
+    @Override
+    public Double getAvgLifeSpan() {
+        return lifeSpanCount == 0 ? 0 : (double)lifeSpanSum / (double)lifeSpanCount;
+    }
+
+    /// API ///
 
     @Override
     public IMapBoundary getMapBoundary() {

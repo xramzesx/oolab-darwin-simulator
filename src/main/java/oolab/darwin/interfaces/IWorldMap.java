@@ -30,6 +30,10 @@ public interface IWorldMap {
 
     //// GETTERS ////
 
+    Integer getTotalFields();
+
+    Double getAvgLifeSpan();
+
     IMapBoundary getMapBoundary();
     ArrayList<IObservable> getObservables();
 
