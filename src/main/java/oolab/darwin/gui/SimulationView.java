@@ -27,6 +27,7 @@ import oolab.darwin.interfaces.IObserver;
 import oolab.darwin.interfaces.IWorldMap;
 import oolab.darwin.maps.ToxicMap;
 import oolab.darwin.maps.WorldMap;
+import oolab.darwin.stats.AnimalStats;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ public class SimulationView extends Application implements Runnable, IObserver {
     public boolean isThreadRunning = true;
     public XYChart.Series animalSeries = new XYChart.Series();
     public XYChart.Series plantSeries = new XYChart.Series();
+    public Animal selectedAnimal;
     public Integer selectedAnimalId = -1;
 
     private ArrayList<Vector2d> generateAnimalPositions() {
@@ -148,11 +150,13 @@ public class SimulationView extends Application implements Runnable, IObserver {
                 animal.setOnMouseClicked(event -> {
                    if(!isThreadRunning) {
                        selectedAnimalId = Integer.parseInt(animal.getId());
+                       selectedAnimal = animals.get(selectedAnimalId);
                        showSpecificInformation();
+                       renderGridPane();
                    }
                 });
                 animal.setStyle("-fx-background-color: #964b00;" +
-                        "-fx-border-color:" + (selectedAnimalId == i ? "red" : "black") + ";");
+                        "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
 
                 simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
             }
@@ -166,7 +170,6 @@ public class SimulationView extends Application implements Runnable, IObserver {
             if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
                 Pane plant = new Pane();
                 plant.setStyle("-fx-background-color: #1f6d04");
-
                 simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
             }
         }
@@ -183,17 +186,17 @@ public class SimulationView extends Application implements Runnable, IObserver {
     }
 
     private void showSpecificInformation() {
-        if(selectedAnimalId > -1) {
-            Animal animal = worldMap.getAnimals().get(selectedAnimalId);
+        if(selectedAnimal != null) {
+            AnimalStats stats = selectedAnimal.getStats(this.engine.day);
             labelAnimalInfo.setText(
-                "\nIs alive: yes" +
-                "\nGenomes: " + animal.getGenomes() +
-                "\nCurrent genome: " + (animal.getGenomes()).get( this.engine.day % (animal.getGenomes().size() - 1) ) +
-                "\nEnergy: -"  +
-                "\nPlants eated: -" +
-                "\nChildren: -" +
-                "\nDays survived: -" +
-                "\nDied on day: -");
+                "\nIs alive: " +(stats.deathDate < 0 ? "yes" : "RIP") +
+                "\nGenomes: " + stats.genomes +
+                "\nCurrent genome: " + stats.currentGenome +
+                "\nEnergy: " + stats.energy  +
+                "\nPlants eated: " + stats.eatenPlants +
+                "\nChildren: " + stats.children +
+                "\nDays survived: " + stats.getAge() +
+                "\nDied on day: " + (stats.deathDate < 0 ? "-" : stats.deathDate));
         }
     }
 
