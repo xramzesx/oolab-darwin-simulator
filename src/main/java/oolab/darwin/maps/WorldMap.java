@@ -40,7 +40,6 @@ public class WorldMap extends AbstractWorldMap {
         IMapBoundary mapBoundary
     ) {
         super(config, mapBoundary);
-
         prepareArea();
     }
 

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class SimulationView extends Application implements Runnable, IObserver {
+public class SimulationView extends Application implements Runnable, IObserver <IEngine> {
     @FXML
     private GridPane simulationGridPane;
     @FXML

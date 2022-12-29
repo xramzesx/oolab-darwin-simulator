@@ -22,6 +22,7 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     protected final Map<Vector2d, IMapElement> objects = new HashMap<>();
 
+    protected final Map<Vector2d, ArrayList<AnimalStats>> deathMap = new HashMap<>();
 
     //// GLOBALS ////
 
@@ -205,6 +206,9 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
         animal.kill(deathDate);
 
+        deathMap.computeIfAbsent(animal.position, k -> new ArrayList<>());
+        deathMap.get(animal.position).add(animal.getStats(deathDate));
+
         unplaceAnimal(animal, animal.position);
     }
 
@@ -226,13 +230,24 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     @Override
     public ArrayList<AnimalStats> statsAt(Vector2d position, int currentDay) {
+        ArrayList<AnimalStats> result = new ArrayList<>();
 
-        return objectsAt(position)
+        ///// ALIVE ANIMALS /////
+
+        result.addAll(objectsAt(position)
                 .stream()
                 .filter(mapElement -> mapElement instanceof Animal)
                 .map(Animal.class::cast)
                 .map(animal -> animal.getStats(currentDay))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toCollection(ArrayList::new))
+        );
+
+        ///// DEATH ANIMALS /////
+
+        if (deathMap.containsKey(position))
+            result.addAll(deathMap.get(position));
+
+        return result;
     }
 
     @Override
@@ -275,5 +290,16 @@ public abstract class AbstractWorldMap implements IWorldMap {
     @Override
     public Map<Vector2d, Plant> getPlantMap() {
         return plantMap;
+    }
+
+    protected ArrayList<Vector2d> getSortedDeathFields () {
+        return deathMap
+                .entrySet()
+                .stream()
+                .sorted(
+                        (s1, s2) -> s2.getValue().size() - s1.getValue().size()
+                )
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
