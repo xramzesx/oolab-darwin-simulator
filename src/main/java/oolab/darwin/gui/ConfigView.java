@@ -208,6 +208,7 @@ public class ConfigView extends Application {
             controller.initializeView(config);
 
             Stage stage = new Stage();
+            stage.setTitle("Simulation");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.show();

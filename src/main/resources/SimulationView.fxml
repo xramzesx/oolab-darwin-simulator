@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="oolab.darwin.gui.SimulationView">
    <children>
       <VBox prefHeight="603.0" prefWidth="199.0" style="-fx-border-color: #000;">
          <children>
-            <Pane prefHeight="445.0" prefWidth="199.0" />
-            <Pane prefHeight="427.0" prefWidth="199.0">
+            <Pane prefHeight="445.0" prefWidth="199.0">
                <children>
-                  <Button fx:id="buttonPause" layoutX="14.0" layoutY="252.0" mnemonicParsing="false" onAction="#handlePauseClick" style="-fx-background-color: #ff605C;" text="Pause" textFill="WHITE">
+                  <LineChart fx:id="lineChart" layoutX="-12.0" prefHeight="297.0" prefWidth="211.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" fx:id="xAxis" />
+                    </yAxis>
+                  </LineChart>
+               </children></Pane>
+            <Pane prefHeight="455.0" prefWidth="197.0">
+               <children>
+                  <Button fx:id="buttonPause" layoutX="13.0" layoutY="266.0" mnemonicParsing="false" onAction="#handlePauseClick" style="-fx-background-color: #ff605C;" text="Pause" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Button>
-                  <Label fx:id="labelAnimals" layoutX="14.0" layoutY="14.0" text="Animal count:" />
-                  <Label fx:id="labelPlants" layoutX="14.0" layoutY="31.0" text="Plant count:" />
+                  <Label fx:id="labelDays" layoutX="14.0" layoutY="14.0" text="Day:" />
+                  <Label fx:id="labelAnimals" layoutX="14.0" layoutY="31.0" text="Animal count:" />
+                  <Label fx:id="labelPlants" layoutX="14.0" layoutY="48.0" text="Plant count:" />
+                  <Label fx:id="labelPlants1" layoutX="14.0" layoutY="81.0" text="Specific informations:" />
+                  <Line endX="87.0" layoutX="105.0" layoutY="72.0" startX="-100.0" />
+                  <Label fx:id="labelAnimalInfo" layoutX="14.0" layoutY="98.0" text="(Pause simulation and select)" />
                </children>
             </Pane>
          </children>

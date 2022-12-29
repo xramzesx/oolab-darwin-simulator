@@ -7,16 +7,16 @@ import java.util.ArrayList;
 
 public class AnimalStats {
 
-    ArrayList<Genome> genomes;
-    Genome currentGenome;
+    public ArrayList<Genome> genomes;
+    public Genome currentGenome;
 
-    Integer energy;
-    Integer eatenPlants;
-    Integer children;
+    public Integer energy;
+    public Integer eatenPlants;
+    public Integer children;
 
-    Integer birthDate;
-    Integer deathDate;
-    Integer age;
+    public Integer birthDate;
+    public Integer deathDate;
+    public Integer age;
 
     public AnimalStats (Animal animal) {
         this.genomes = animal.getGenomes();
