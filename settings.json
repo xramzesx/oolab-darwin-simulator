@@ -11,7 +11,7 @@
   "mapVariant": "NORMAL",
   "mutationVariant": "RANDOMIZED",
   "animalBehaviorVariant": "DEVIATION",
-  "refreshTime": 100,
+  "refreshTime": 200,
   "plantsPerDay": 4,
   "plantEnergy":5,
   "minMutationQuantity": 2,

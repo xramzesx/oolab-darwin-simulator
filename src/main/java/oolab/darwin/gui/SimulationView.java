@@ -88,7 +88,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
     }
 
     public void closeWindow() {
-        this.engineThread.interrupt();
+        this.engineThread.stop();
     }
 
     public void initializeView(Config config) {
@@ -144,39 +144,51 @@ public class SimulationView extends Application implements Runnable, IObserver <
     }
 
     private void generatePlants() {
-        ArrayList<Plant> plants = worldMap.getPlants();
-        Platform.runLater(() -> plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
+        try {
+            ArrayList<Plant> plants = worldMap.getPlants();
+            Platform.runLater(() -> plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
 
-        for (int i = 0; i < plants.size(); i++) {
-            if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
-                Pane plant = new Pane();
-                plant.setStyle("-fx-background-color: #1f6d04");
-                simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
+            for (int i = 0; i < plants.size(); i++) {
+                Plant currentPlant = plants.get(i);
+                if(currentPlant.getPosition().x >= 0 && currentPlant.getPosition().x < plants.size() && currentPlant.getPosition().y >= 0 && currentPlant.getPosition().y < plants.size()) {
+                    Pane plant = new Pane();
+                    plant.setStyle("-fx-background-color: #1f6d04");
+                    simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
+                }
             }
+        } catch (Exception err) {
+            System.out.println(err);
         }
     }
 
     private void generateAnimals() {
-        ArrayList<Animal> animals = worldMap.getAnimals();
-        Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
+        try {
+            ArrayList<Animal> animals = worldMap.getAnimals();
+            Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
 
-        for (int i = 0; i < animals.size(); i++) {
-            if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
-                Pane animal = new Pane();
-                animal.setId(i + "");
-                animal.setOnMouseClicked(event -> {
-                    selectedAnimalId = Integer.parseInt(animal.getId());
-                    selectedAnimal = animals.get(selectedAnimalId);
-                    showSpecificInformation();
-                    renderGridPane();
-                });
-                animal.setStyle("-fx-background-color: " + getAnimalColor(animals.get(i).energy) + ";" +
-                        "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
+            for (int i = 0; i < animals.size(); i++) {
+                Animal currentAnimal = animals.get(i);
+                if(currentAnimal.getPosition().x >= 0 && currentAnimal.getPosition().x < this.config.mapWidth && currentAnimal.getPosition().y >= 0 && currentAnimal.getPosition().y < this.config.mapHeight) {
+                    Pane animal = new Pane();
+                    animal.setId(i + "");
+                    animal.setOnMouseClicked(event -> {
+                        selectedAnimalId = Integer.parseInt(animal.getId());
+                        selectedAnimal = animals.get(selectedAnimalId);
+                        showSpecificInformation();
+                        renderGridPane();
+                    });
 
-                simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
+                    animal.setStyle("-fx-background-color: " + ((!isThreadRunning && currentAnimal.getGenomes().equals(this.engine.getStats().mostPopularGenotype)) ?  "blue" : getAnimalColor(animals.get(i).energy)) + ";" +
+                            "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
+
+                    simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
+                }
             }
+        } catch (Exception err) {
+            System.out.println(err);
         }
     }
+
 
     private void generateEngineStats() {
         labelDays.setText("Day: " + this.engine.day);
@@ -184,8 +196,8 @@ public class SimulationView extends Application implements Runnable, IObserver <
         labelPlants.setText("Plant count: " + this.engine.getStats().plantsQuantity);
         labelEmptySpaces.setText("Empty spaces count: " + this.engine.getStats().freeFieldsQuantity);
         labelMostPopularGenotype.setText(this.engine.getStats().mostPopularGenotype + "");
-        labelAvgEnergy.setText("Average animal energy: " + this.engine.getStats().avgAnimalEnergy);
-        labelAvgAge.setText("Average animal age: " + this.engine.getStats().avgLifeSpan);
+        labelAvgEnergy.setText("Average animal energy: " +  Math.round(this.engine.getStats().avgAnimalEnergy * 100.0) / 100.0);
+        labelAvgAge.setText("Average animal age: " +  Math.round(this.engine.getStats().avgLifeSpan * 100.0) / 100.0);
     }
 
     public void renderGridPane() {
@@ -240,7 +252,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
             isThreadRunning = false;
             buttonPause.setText("Start");
             buttonPause.setStyle("-fx-background-color: #55c233");
-
+            renderGridPane();
         } else {
             engineThread.resume();
             isThreadRunning = true;
@@ -269,22 +281,6 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     @Override
     public void signal(IEngine engine) {
-        
         Platform.runLater(this::renderGridPane);
-
-        //// example api use: ///
-
-        System.out.println(engine.getWorldMap());
-
-        EngineStats engineStats = engine.getStats();
-
-        System.out.println("ES[animalsQuantity]\t" + engineStats.animalsQuantity);
-        System.out.println("ES[plantsQuantity]\t" + engineStats.plantsQuantity);
-        System.out.println("ES[avgLifeSpan]\t" + engineStats.avgLifeSpan);
-        System.out.println("ES[avgAnimalEnergy]\t" + engineStats.avgAnimalEnergy);
-        System.out.println("ES[freeFieldsQuantity]\t" + engineStats.freeFieldsQuantity);
-        System.out.println("ES[mostPopularGenotype]\t" + engineStats.mostPopularGenotype);
-
-        /// engine.getMapBoundary();
     }
 }

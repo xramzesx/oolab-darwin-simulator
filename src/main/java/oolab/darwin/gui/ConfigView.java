@@ -134,6 +134,8 @@ public class ConfigView extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            primaryStage.setOnCloseRequest(e -> primaryStage.close());
+
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("ConfigView.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
