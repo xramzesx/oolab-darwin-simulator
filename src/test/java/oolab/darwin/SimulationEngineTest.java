@@ -22,8 +22,10 @@ import java.util.*;
 
 public class SimulationEngineTest {
 
-    private ArrayList<Vector2d> generateAnimalPositions(Config config,IMapBoundary mapBoundary) {
+    private ArrayList<Vector2d> generateAnimalPositions(Config config) {
         HashSet<Vector2d> positions = new HashSet<>();
+
+        IMapBoundary mapBoundary = new EarthBoundary(config);
 
         while ( positions.size() < config.initialAnimalQuantity ) {
             positions.add(
@@ -95,6 +97,161 @@ public class SimulationEngineTest {
         //// START SIMULATION ////
 
         engine.run();
+    }
+
+    @Test
+    void placeTest() {
+
+        Config config = new Config();
+
+        config.mapWidth=30;
+        config.mapHeight=30;
+
+        config.initialPlantQuantity = 100;
+        config.initialAnimalQuantity = 100;
+        config.initialAnimalEnergy = 10;
+
+        config.stuffedEnergy = 200;
+        config.multiplicationEnergy = 200;
+        config.genomeLength = 5;
+
+        config.boundaryVariant = BoundaryVariant.HELLISH;
+        config.mapVariant = MapVariant.TOXIC;
+        config.mutationVariant = MutationVariant.RANDOMIZED;
+        config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
+
+        config.refreshTime = 0;
+        config.plantsPerDay = 4;
+        config.plantEnergy = 2;
+        config.minMutationQuantity = 0;
+        config.maxMutationQuantity = 4;
+
+
+        ArrayList<Vector2d> animalPositions = generateAnimalPositions(config);
+
+        IEngine engine = generateEngine(config, animalPositions);
+
+        //// CHECKS ////
+
+        for (Animal animal : engine.getWorldMap().getAnimals())
+            assert(engine.getWorldMap().objectsAt(animal.position).contains(animal));
+
+        for (Plant plant : engine.getWorldMap().getPlants())
+            assert(engine.getWorldMap().objectsAt(plant.position).contains(plant));
+
+        engine.run();
+
+    }
+
+    @Test
+    void EarthBoundaryTest () {
+        Config config = new Config();
+
+        config.mapWidth=30;
+        config.mapHeight=30;
+
+        config.initialPlantQuantity = 0;
+        config.initialAnimalQuantity = 1;
+        config.initialAnimalEnergy = 100;
+
+        config.stuffedEnergy = 5;
+        config.multiplicationEnergy = 10;
+        config.genomeLength = 5;
+
+        config.boundaryVariant = BoundaryVariant.EARTH;
+        config.mapVariant = MapVariant.NORMAL;
+        config.mutationVariant = MutationVariant.RANDOMIZED;
+        config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
+
+        config.refreshTime = 0;
+        config.plantsPerDay = 4;
+        config.plantEnergy = 2;
+        config.minMutationQuantity = 0;
+        config.maxMutationQuantity = 4;
+
+        ArrayList<Vector2d> animalPositions =
+            new ArrayList<>(Arrays.asList(
+                new Vector2d(0,0),
+                new Vector2d(-1,0),
+                new Vector2d(0, -1),
+                new Vector2d(config.mapWidth,0),
+                new Vector2d(0,config.mapHeight),
+                new Vector2d(1,1)
+            ));
+
+        IEngine engine = generateEngine(config, animalPositions);
+
+        Vector2d lowerLeft = engine.getMapBoundary().lowerLeft();
+        Vector2d upperRight = engine.getMapBoundary().upperRight();
+
+        //// CHECKS ////
+
+        for (Animal animal : engine.getWorldMap().getAnimals()) {
+            assert (lowerLeft.x <= animal.position.x);
+            assert (lowerLeft.y <= animal.position.x);
+            assert (upperRight.x >= animal.position.x);
+            assert (upperRight.y >= animal.position.x);
+        }
+
+
+        assertEquals(new Vector2d(0,0), engine.getWorldMap().getAnimals().get(0).position);
+        assertEquals(new Vector2d(upperRight.x,0), engine.getWorldMap().getAnimals().get(1).position);
+        assertEquals(new Vector2d(0,0), engine.getWorldMap().getAnimals().get(2).position);
+        assertEquals(new Vector2d(0,0), engine.getWorldMap().getAnimals().get(3).position);
+        assertEquals(new Vector2d(0,29), engine.getWorldMap().getAnimals().get(4).position);
+        assertEquals(new Vector2d(1,1), engine.getWorldMap().getAnimals().get(5).position);
+    }
+
+    @Test
+    void HellishBoundaryTest () {
+        Config config = new Config();
+
+        config.mapWidth=30;
+        config.mapHeight=30;
+
+        config.initialPlantQuantity = 0;
+        config.initialAnimalQuantity = 1;
+        config.initialAnimalEnergy = 100;
+
+        config.stuffedEnergy = 5;
+        config.multiplicationEnergy = 10;
+        config.genomeLength = 5;
+
+        config.boundaryVariant = BoundaryVariant.HELLISH;
+        config.mapVariant = MapVariant.NORMAL;
+        config.mutationVariant = MutationVariant.RANDOMIZED;
+        config.animalBehaviorVariant = AnimalBehaviorVariant.DEVIATION;
+
+        config.refreshTime = 0;
+        config.plantsPerDay = 4;
+        config.plantEnergy = 2;
+        config.minMutationQuantity = 0;
+        config.maxMutationQuantity = 4;
+
+        ArrayList<Vector2d> animalPositions =
+                new ArrayList<>(Arrays.asList(
+                        new Vector2d(0,0),
+                        new Vector2d(-1,0),
+                        new Vector2d(0, -1),
+                        new Vector2d(config.mapWidth,0),
+                        new Vector2d(0,config.mapHeight),
+                        new Vector2d(1,1)
+                ));
+
+        IEngine engine = generateEngine(config, animalPositions);
+
+        Vector2d lowerLeft = engine.getMapBoundary().lowerLeft();
+        Vector2d upperRight = engine.getMapBoundary().upperRight();
+
+        //// CHECKS ////
+
+        for (Animal animal : engine.getWorldMap().getAnimals()) {
+            assert (lowerLeft.x <= animal.position.x);
+            assert (lowerLeft.y <= animal.position.x);
+            assert (upperRight.x >= animal.position.x);
+            assert (upperRight.y >= animal.position.x);
+        }
+
     }
 
     @Test
