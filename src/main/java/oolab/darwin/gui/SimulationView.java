@@ -79,6 +79,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
     int cellHeight= 0;
     int widowNumber = 0;
     CSVWriter fileWriter;
+    String fileName = "";
 
     public ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
@@ -97,9 +98,9 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     public void closeWindow() {
         if(this.config.shouldSaveDataToCSV == 1) {
-            openFile("simulationStats" + widowNumber +".csv");
+            openFile(fileName);
         }
-        this.engineThread.stop();
+        this.engine.stopThread();
     }
 
     public void openFile(String fileName) {
@@ -130,10 +131,10 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #5fc314");
-
+        fileName = "simulation-" + widowNumber +"-stats.csv";
         if(this.config.shouldSaveDataToCSV > 0) {
             this.widowNumber = widowNumber;
-            fileWriter = new CSVWriter("simulationStats" + widowNumber +".csv");
+            fileWriter = new CSVWriter(fileName);
             fileWriter.clearFile();
             fileWriter.saveRecord("Day,Animal quantity,Plants quantity,Free fields quantity,Most popular genotype,Avg animal energy,Avg life span"); // title
         }
@@ -285,13 +286,13 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     public void handlePauseClick() {
         if(isThreadRunning) {
-            engineThread.suspend(); // TODO change it for more actual version
+            this.engine.pauseThread();
             isThreadRunning = false;
             buttonPause.setText("Start");
             buttonPause.setStyle("-fx-background-color: #55c233");
             renderGridPane();
         } else {
-            engineThread.resume();
+            this.engine.resumeThread();
             isThreadRunning = true;
             buttonPause.setText("Pause");
             buttonPause.setStyle("-fx-background-color: #ff605C");

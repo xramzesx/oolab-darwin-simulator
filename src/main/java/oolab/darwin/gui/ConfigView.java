@@ -78,27 +78,86 @@ public class ConfigView extends Application {
 
     @FXML
     public void initialize() {
-        loadSettingsFromFile(new File("settings.json"), "Could not find file settings.json");
+        loadSettingsFromFile(new File("settings.json"), "Could not find file settings.json", false);
     }
 
     public Integer widowsOpened = 0;
 
     public void loadSettings(Config config) {
-        if(config.mapHeight != null)  inputMapHeight.setText(config.mapHeight.toString());
-        if(config.mapWidth != null)inputMapWidth.setText(config.mapWidth.toString());
-        if(config.initialPlantQuantity != null) inputPlantQuantity.setText(config.initialPlantQuantity.toString());
-        if(config.initialAnimalQuantity != null) inputAnimalQuantity.setText(config.initialAnimalQuantity.toString());
-        if(config.initialAnimalEnergy != null) inputAnimalEnergy.setText(config.initialAnimalEnergy.toString());
-        if(config.stuffedEnergy != null) inputStuffedEnergy.setText(config.stuffedEnergy.toString());
-        if(config.multiplicationEnergy != null) inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
-        if(config.genomeLength != null) inputGenomeLength.setText(config.genomeLength.toString());
-        if(config.multiplicationEnergy != null) inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
-        if(config.refreshTime != null) inputRefreshTime.setText(config.refreshTime.toString());
-        if(config.plantsPerDay != null) inputPlantsPerDay.setText(config.plantsPerDay.toString());
-        if(config.plantEnergy != null) inputPlantEnergy.setText(config.plantEnergy.toString());
-        if(config.minMutationQuantity != null) inputMinMutationQuantity.setText(config.minMutationQuantity.toString());
-        if(config.maxMutationQuantity != null) inputMaxMutationQuantity.setText(config.maxMutationQuantity.toString());
-        if(config.shouldSaveDataToCSV != null) checkBoxSaveToCSV.setSelected(config.shouldSaveDataToCSV == 1);
+        if(config.mapHeight != null)
+            inputMapHeight.setText(config.mapHeight.toString());
+        else
+            inputMapHeight.setText("");
+
+        if(config.mapWidth != null)
+            inputMapWidth.setText(config.mapWidth.toString());
+        else
+            inputMapWidth.setText("");
+
+        if(config.initialPlantQuantity != null)
+            inputPlantQuantity.setText(config.initialPlantQuantity.toString());
+        else
+            inputPlantQuantity.setText("");
+
+        if(config.initialAnimalQuantity != null)
+            inputAnimalQuantity.setText(config.initialAnimalQuantity.toString());
+        else
+            inputAnimalQuantity.setText("");
+
+        if(config.initialAnimalEnergy != null)
+            inputAnimalEnergy.setText(config.initialAnimalEnergy.toString());
+        else
+            inputAnimalEnergy.setText("");
+
+        if(config.stuffedEnergy != null)
+            inputStuffedEnergy.setText(config.stuffedEnergy.toString());
+        else
+            inputStuffedEnergy.setText("");
+
+        if(config.multiplicationEnergy != null)
+            inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
+        else
+            inputMultiplicationEnergy.setText("");
+
+        if(config.genomeLength != null)
+            inputGenomeLength.setText(config.genomeLength.toString());
+        else
+            inputGenomeLength.setText("");
+
+        if(config.multiplicationEnergy != null)
+            inputMultiplicationEnergy.setText(config.multiplicationEnergy.toString());
+        else
+            inputMultiplicationEnergy.setText("");
+
+        if(config.refreshTime != null)
+            inputRefreshTime.setText(config.refreshTime.toString());
+        else
+            inputRefreshTime.setText("");
+
+        if(config.plantsPerDay != null)
+            inputPlantsPerDay.setText(config.plantsPerDay.toString());
+        else
+            inputPlantsPerDay.setText("");
+
+        if(config.plantEnergy != null)
+            inputPlantEnergy.setText(config.plantEnergy.toString());
+        else
+            inputPlantEnergy.setText("");
+
+        if(config.minMutationQuantity != null)
+            inputMinMutationQuantity.setText(config.minMutationQuantity.toString());
+        else
+            inputMinMutationQuantity.setText("");
+
+        if(config.maxMutationQuantity != null)
+            inputMaxMutationQuantity.setText(config.maxMutationQuantity.toString());
+        else
+            inputMaxMutationQuantity.setText("");
+
+        if(config.shouldSaveDataToCSV != null)
+            checkBoxSaveToCSV.setSelected(config.shouldSaveDataToCSV == 1);
+        else
+            checkBoxSaveToCSV.setSelected(false);
 
         if(config.mapVariant != null && config.mapVariant.equals(MapVariant.NORMAL)) {
             radioClassicMap.setSelected(true);
@@ -125,14 +184,21 @@ public class ConfigView extends Application {
         }
     }
 
-    public void loadSettingsFromFile(File file, String errorMessage) {
+    public Config loadSettingsFromFile(File file, String errorMessage, boolean testOnly) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             Config config = new Gson().fromJson(br, Config.class);
-            labelErrorMessage.setText("");
-            loadSettings(config);
+
+            if(!testOnly) {
+                labelErrorMessage.setText("");
+                loadSettings(config);
+            }
+            return config;
         } catch(Exception err) {
-            labelErrorMessage.setText(errorMessage);
+            if(!testOnly) {
+                labelErrorMessage.setText(errorMessage);
+            }
+            return null;
         }
     }
 
@@ -191,7 +257,7 @@ public class ConfigView extends Application {
         fileChooser.setTitle("Open configuration JSON file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json files", "*.json"));
         File file = fileChooser.showOpenDialog(null);
-        loadSettingsFromFile(file, "Make sure that selected file is valid");
+        loadSettingsFromFile(file, "Make sure that selected file is valid", false);
     }
 
     public void openSimulationView(Config config) {

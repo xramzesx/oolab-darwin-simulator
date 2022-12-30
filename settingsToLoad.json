@@ -1,0 +1,14 @@
+{
+  "mapWidth": 10,
+  "mapHeight":  10,
+  "initialPlantQuantity":  2340,
+  "initialAnimalQuantity": 5,
+  "genomeLength": 5,
+  "refreshTime": 100,
+  "plantsPerDay": 41,
+  "plantEnergy":234,
+  "minMutationQuantity": 2,
+  "maxMutationQuantity": 6,
+  "shouldSaveDataToCSV": 1
+
+}
