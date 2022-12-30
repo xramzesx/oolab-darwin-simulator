@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import oolab.darwin.CSVWriter;
 import oolab.darwin.Config;
 import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
@@ -31,6 +32,11 @@ import oolab.darwin.maps.WorldMap;
 import oolab.darwin.stats.AnimalStats;
 import oolab.darwin.stats.EngineStats;
 
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,8 +77,10 @@ public class SimulationView extends Application implements Runnable, IObserver <
     public Integer selectedAnimalId = -1;
     int cellWidth = 0;
     int cellHeight= 0;
+    int widowNumber = 0;
+    CSVWriter fileWriter;
 
-    private ArrayList<Vector2d> generateAnimalPositions() {
+    public ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
 
         while ( positions.size() < config.initialAnimalQuantity ) {
@@ -88,10 +96,32 @@ public class SimulationView extends Application implements Runnable, IObserver <
     }
 
     public void closeWindow() {
+        if(this.config.shouldSaveDataToCSV == 1) {
+            openFile("simulationStats" + widowNumber +".csv");
+        }
         this.engineThread.stop();
     }
 
-    public void initializeView(Config config) {
+    public void openFile(String fileName) {
+        try
+        {
+            File file_open = new File("./" + fileName);
+            if(!Desktop.isDesktopSupported())
+            {
+                System.out.println("Desktop Support Not Present in the system.");
+                return;
+            }
+            Desktop desktop = Desktop.getDesktop();
+            if(file_open.exists())
+                desktop.open(file_open);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void initializeView(Config config, Integer widowNumber) {
         /// LINE CHART SETTINGS ///
         lineChart.setCreateSymbols(false);
         animalSeries.setName("Animal count");
@@ -100,6 +130,13 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #5fc314");
+
+        if(this.config.shouldSaveDataToCSV > 0) {
+            this.widowNumber = widowNumber;
+            fileWriter = new CSVWriter("simulationStats" + widowNumber +".csv");
+            fileWriter.clearFile();
+            fileWriter.saveRecord("Day,Animal quantity,Plants quantity,Free fields quantity,Most popular genotype,Avg animal energy,Avg life span"); // title
+        }
 
         cellWidth = 600 / this.config.mapWidth;
         cellHeight  = 600 / this.config.mapHeight;
@@ -279,8 +316,14 @@ public class SimulationView extends Application implements Runnable, IObserver <
         engineThread.start();
     }
 
+
+
     @Override
     public void signal(IEngine engine) {
         Platform.runLater(this::renderGridPane);
+        if(this.config.shouldSaveDataToCSV == 1) {
+            EngineStats stats = this.engine.getStats();
+            fileWriter.saveRecord(this.engine.day + "," + stats.animalsQuantity + "," + stats.plantsQuantity + "," + stats.freeFieldsQuantity + "," + fileWriter.arrayToWritableString(stats.mostPopularGenotype) + "," + stats.avgAnimalEnergy + "," + stats.avgLifeSpan);
+        }
     }
 }
