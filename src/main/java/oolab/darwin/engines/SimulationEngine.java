@@ -24,7 +24,8 @@ public class SimulationEngine implements IEngine {
     private final Config config;
 
     private final ArrayList<IObserver<IEngine>> observers = new ArrayList<>();
-
+    private boolean isThreadSuspended = false;
+    private boolean isStopped = false;
 
     //// INIT ////
 
@@ -52,6 +53,18 @@ public class SimulationEngine implements IEngine {
         }
 
         this.map.spawnPlants(true);
+    }
+    public void stopThread() {
+          isStopped = true;
+    }
+
+    public synchronized void pauseThread() {
+        isThreadSuspended = true;
+    }
+
+    public synchronized void resumeThread() {
+        isThreadSuspended = false;
+        notify();
     }
 
     //// STEPS ////
@@ -109,22 +122,27 @@ public class SimulationEngine implements IEngine {
     }
 
     private void simulateDay() {
-        day++;
-        sunRise();
-        clearCorpse();
-        moveAnimals();
-        consumption();
-        multiplyAnimals();
-
         try {
+            day++;
+            sunRise();
+            clearCorpse();
+            moveAnimals();
+            consumption();
+            multiplyAnimals();
+
             Thread.sleep(this.config.refreshTime);
+            synchronized (this) {
+                while(isThreadSuspended) {
+                    wait();
+                }
+            }
+
+            this.signal();
+            renewPlants();
+            System.gc();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-        this.signal();
-        renewPlants();
-        System.gc();
     }
 
     //// INTERFACE ////
@@ -133,7 +151,7 @@ public class SimulationEngine implements IEngine {
 
     @Override
     public void run() {
-        while (map.getAnimals().size() > 0)
+        while (!isStopped && map.getAnimals().size() > 0)
             simulateDay();
 
         System.out.println("[engine] simulation ended");

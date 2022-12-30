@@ -99,7 +99,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
         if(this.config.shouldSaveDataToCSV == 1) {
             openFile("simulationStats" + widowNumber +".csv");
         }
-        this.engineThread.stop();
+        this.engine.stopThread();
     }
 
     public void openFile(String fileName) {
@@ -285,13 +285,13 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     public void handlePauseClick() {
         if(isThreadRunning) {
-            engineThread.suspend(); // TODO change it for more actual version
+            this.engine.pauseThread();
             isThreadRunning = false;
             buttonPause.setText("Start");
             buttonPause.setStyle("-fx-background-color: #55c233");
             renderGridPane();
         } else {
-            engineThread.resume();
+            this.engine.resumeThread();
             isThreadRunning = true;
             buttonPause.setText("Pause");
             buttonPause.setStyle("-fx-background-color: #ff605C");
