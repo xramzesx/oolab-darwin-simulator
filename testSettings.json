@@ -1,0 +1,20 @@
+{
+  "mapWidth": 30,
+  "mapHeight":  30,
+  "initialPlantQuantity":  10,
+  "initialAnimalQuantity": 5,
+  "initialAnimalEnergy": 10,
+  "stuffedEnergy": 5,
+  "multiplicationEnergy": 10,
+  "genomeLength": 5,
+  "boundaryVariant": "HELLISH",
+  "mapVariant": "NORMAL",
+  "mutationVariant": "RANDOMIZED",
+  "animalBehaviorVariant": "DEVIATION",
+  "refreshTime": 200,
+  "plantsPerDay": 4,
+  "plantEnergy":5,
+  "minMutationQuantity": 2,
+  "maxMutationQuantity": 6,
+  "shouldSaveDataToCSV": 1
+}
