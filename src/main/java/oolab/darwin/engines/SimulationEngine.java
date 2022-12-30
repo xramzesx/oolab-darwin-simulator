@@ -1,5 +1,6 @@
 package oolab.darwin.engines;
 
+import oolab.darwin.CSVWriter;
 import oolab.darwin.Config;
 import oolab.darwin.Vector2d;
 import oolab.darwin.elements.Animal;

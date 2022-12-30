@@ -2,6 +2,7 @@ package oolab.darwin.gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.chart.LineChart;
@@ -13,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import oolab.darwin.CSVWriter;
 import oolab.darwin.Config;
 import oolab.darwin.Utils;
 import oolab.darwin.Vector2d;
@@ -30,6 +32,11 @@ import oolab.darwin.maps.WorldMap;
 import oolab.darwin.stats.AnimalStats;
 import oolab.darwin.stats.EngineStats;
 
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -49,6 +56,14 @@ public class SimulationView extends Application implements Runnable, IObserver <
     private Label labelAnimalInfo;
     @FXML
     private LineChart<?, ?> lineChart;
+    @FXML
+    private Label labelAvgAge;
+    @FXML
+    private Label labelAvgEnergy;
+    @FXML
+    private Label labelEmptySpaces;
+    @FXML
+    private Label labelMostPopularGenotype;
     private Config config;
     private IMapBoundary mapBoundary;
     private IWorldMap worldMap;
@@ -60,8 +75,12 @@ public class SimulationView extends Application implements Runnable, IObserver <
     public XYChart.Series plantSeries = new XYChart.Series();
     public Animal selectedAnimal;
     public Integer selectedAnimalId = -1;
+    int cellWidth = 0;
+    int cellHeight= 0;
+    int widowNumber = 0;
+    CSVWriter fileWriter;
 
-    private ArrayList<Vector2d> generateAnimalPositions() {
+    public ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
 
         while ( positions.size() < config.initialAnimalQuantity ) {
@@ -76,10 +95,33 @@ public class SimulationView extends Application implements Runnable, IObserver <
         return new ArrayList<>(positions);
     }
 
+    public void closeWindow() {
+        if(this.config.shouldSaveDataToCSV == 1) {
+            openFile("simulationStats" + widowNumber +".csv");
+        }
+        this.engineThread.stop();
+    }
 
+    public void openFile(String fileName) {
+        try
+        {
+            File file_open = new File("./" + fileName);
+            if(!Desktop.isDesktopSupported())
+            {
+                System.out.println("Desktop Support Not Present in the system.");
+                return;
+            }
+            Desktop desktop = Desktop.getDesktop();
+            if(file_open.exists())
+                desktop.open(file_open);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-    public void initializeView(Config config) {
-
+    public void initializeView(Config config, Integer widowNumber) {
         /// LINE CHART SETTINGS ///
         lineChart.setCreateSymbols(false);
         animalSeries.setName("Animal count");
@@ -88,6 +130,16 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #5fc314");
+
+        if(this.config.shouldSaveDataToCSV > 0) {
+            this.widowNumber = widowNumber;
+            fileWriter = new CSVWriter("simulationStats" + widowNumber +".csv");
+            fileWriter.clearFile();
+            fileWriter.saveRecord("Day,Animal quantity,Plants quantity,Free fields quantity,Most popular genotype,Avg animal energy,Avg life span"); // title
+        }
+
+        cellWidth = 600 / this.config.mapWidth;
+        cellHeight  = 600 / this.config.mapHeight;
 
         //// PREPARING SIMULATION ////
 
@@ -102,24 +154,12 @@ public class SimulationView extends Application implements Runnable, IObserver <
             case TOXIC ->   new ToxicMap(config, mapBoundary);
         };
 
+        generateMapArea();
         animalPositions = generateAnimalPositions();
         this.run();
     }
 
-    public void renderGridPane() {
-        int cellWidth = 600 / this.config.mapWidth;
-        int cellHeight  = 600 / this.config.mapHeight;
-
-        labelDays.setText("Day: " + this.engine.day);
-
-        simulationGridPane.setGridLinesVisible(false);
-        simulationGridPane.getColumnConstraints().clear();
-        simulationGridPane.getRowConstraints().clear();
-        simulationGridPane.getChildren().clear();
-
-        simulationGridPane.setGridLinesVisible(true);
-        simulationGridPane.setGridLinesVisible(true);
-
+    private void generateMapArea() {
         Label yxLabel = new Label("");
         simulationGridPane.add(yxLabel, 0, 0, 1, 1);
         simulationGridPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
@@ -138,49 +178,82 @@ public class SimulationView extends Application implements Runnable, IObserver <
             simulationGridPane.getRowConstraints().add(new RowConstraints(cellHeight));
             GridPane.setHalignment(label, HPos.CENTER);
         }
+    }
 
-        ArrayList<Plant> plants = worldMap.getPlants();
-        labelPlants.setText("Plant count: " + plants.size());
-        Platform.runLater(() ->   plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
+    private void generatePlants() {
+        try {
+            ArrayList<Plant> plants = worldMap.getPlants();
+            Platform.runLater(() -> plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
 
-        for (int i = 0; i < plants.size(); i++) {
-            if(plants.get(i).getPosition().x >= 0 && plants.get(i).getPosition().y >= 0) {
-                Pane plant = new Pane();
-                plant.setStyle("-fx-background-color: #1f6d04");
-                simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
+            for (int i = 0; i < plants.size(); i++) {
+                Plant currentPlant = plants.get(i);
+                if(currentPlant.getPosition().x >= 0 && currentPlant.getPosition().x < plants.size() && currentPlant.getPosition().y >= 0 && currentPlant.getPosition().y < plants.size()) {
+                    Pane plant = new Pane();
+                    plant.setStyle("-fx-background-color: #1f6d04");
+                    simulationGridPane.add(plant,  plants.get(i).getPosition().x, plants.get(i).getPosition().y, 1, 1);
+                }
             }
+        } catch (Exception err) {
+            System.out.println(err);
         }
+    }
 
-        ArrayList<Animal> animals = worldMap.getAnimals();
-        labelAnimals.setText("Animal count: " + animals.size());
-        Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
+    private void generateAnimals() {
+        try {
+            ArrayList<Animal> animals = worldMap.getAnimals();
+            Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
 
-        for (int i = 0; i < animals.size(); i++) {
-            if(animals.get(i).getPosition().x >= 0 && animals.get(i).getPosition().x < this.config.mapWidth && animals.get(i).getPosition().y >= 0 && animals.get(i).getPosition().y < this.config.mapHeight) {
-                Pane animal = new Pane();
-                animal.setId(i + "");
-                animal.setOnMouseClicked(event -> {
-                    selectedAnimalId = Integer.parseInt(animal.getId());
-                    selectedAnimal = animals.get(selectedAnimalId);
-                    showSpecificInformation();
-                    renderGridPane();
-                });
-                animal.setStyle("-fx-background-color: " + getAnimalColor(animals.get(i).energy) + ";" +
-                        "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
+            for (int i = 0; i < animals.size(); i++) {
+                Animal currentAnimal = animals.get(i);
+                if(currentAnimal.getPosition().x >= 0 && currentAnimal.getPosition().x < this.config.mapWidth && currentAnimal.getPosition().y >= 0 && currentAnimal.getPosition().y < this.config.mapHeight) {
+                    Pane animal = new Pane();
+                    animal.setId(i + "");
+                    animal.setOnMouseClicked(event -> {
+                        selectedAnimalId = Integer.parseInt(animal.getId());
+                        selectedAnimal = animals.get(selectedAnimalId);
+                        showSpecificInformation();
+                        renderGridPane();
+                    });
 
-                simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
+                    animal.setStyle("-fx-background-color: " + ((!isThreadRunning && currentAnimal.getGenomes().equals(this.engine.getStats().mostPopularGenotype)) ?  "blue" : getAnimalColor(animals.get(i).energy)) + ";" +
+                            "-fx-border-color:" + (selectedAnimalId == i ? "red" : "none") + ";");
+
+                    simulationGridPane.add(animal,  animals.get(i).getPosition().x, animals.get(i).getPosition().y, 1, 1);
+                }
             }
+        } catch (Exception err) {
+            System.out.println(err);
         }
+    }
 
+
+    private void generateEngineStats() {
+        labelDays.setText("Day: " + this.engine.day);
+        labelAnimals.setText("Animal count: " +this.engine.getStats().animalsQuantity);
+        labelPlants.setText("Plant count: " + this.engine.getStats().plantsQuantity);
+        labelEmptySpaces.setText("Empty spaces count: " + this.engine.getStats().freeFieldsQuantity);
+        labelMostPopularGenotype.setText(this.engine.getStats().mostPopularGenotype + "");
+        labelAvgEnergy.setText("Average animal energy: " +  Math.round(this.engine.getStats().avgAnimalEnergy * 100.0) / 100.0);
+        labelAvgAge.setText("Average animal age: " +  Math.round(this.engine.getStats().avgLifeSpan * 100.0) / 100.0);
+    }
+
+    public void renderGridPane() {
+        simulationGridPane.setGridLinesVisible(false);
+        simulationGridPane.getChildren().clear();
+        simulationGridPane.setGridLinesVisible(true);
+
+        generatePlants();
+        generateAnimals();
+        generateEngineStats();
+        showSpecificInformation();
+
+        // Add new data to line chart
         Platform.runLater(() -> {
             if (animalSeries.getData().size() > 10) {
                 animalSeries.getData().remove(0);
                 plantSeries.getData().remove(0);
             }
         });
-
-        showSpecificInformation();
-
     }
 
     public String getAnimalColor(Integer energy) {
@@ -216,7 +289,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
             isThreadRunning = false;
             buttonPause.setText("Start");
             buttonPause.setStyle("-fx-background-color: #55c233");
-
+            renderGridPane();
         } else {
             engineThread.resume();
             isThreadRunning = true;
@@ -227,14 +300,10 @@ public class SimulationView extends Application implements Runnable, IObserver <
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-
-    }
+    public void start(Stage primaryStage) throws Exception {}
 
     @Override
     public void run() {
-
-
         engine = new SimulationEngine(
             config,
             worldMap,
@@ -247,24 +316,14 @@ public class SimulationView extends Application implements Runnable, IObserver <
         engineThread.start();
     }
 
+
+
     @Override
     public void signal(IEngine engine) {
-        
         Platform.runLater(this::renderGridPane);
-
-        //// example api use: ///
-
-        System.out.println(engine.getWorldMap());
-
-        EngineStats engineStats = engine.getStats();
-
-        System.out.println("ES[animalsQuantity]\t" + engineStats.animalsQuantity);
-        System.out.println("ES[plantsQuantity]\t" + engineStats.plantsQuantity);
-        System.out.println("ES[avgLifeSpan]\t" + engineStats.avgLifeSpan);
-        System.out.println("ES[avgAnimalEnergy]\t" + engineStats.avgAnimalEnergy);
-        System.out.println("ES[freeFieldsQuantity]\t" + engineStats.freeFieldsQuantity);
-        System.out.println("ES[mostPopularGenotype]\t" + engineStats.mostPopularGenotype);
-
-        /// engine.getMapBoundary();
+        if(this.config.shouldSaveDataToCSV == 1) {
+            EngineStats stats = this.engine.getStats();
+            fileWriter.saveRecord(this.engine.day + "," + stats.animalsQuantity + "," + stats.plantsQuantity + "," + stats.freeFieldsQuantity + "," + fileWriter.arrayToWritableString(stats.mostPopularGenotype) + "," + stats.avgAnimalEnergy + "," + stats.avgLifeSpan);
+        }
     }
 }

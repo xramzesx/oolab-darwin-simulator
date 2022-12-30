@@ -34,4 +34,5 @@ public class Config {
 
     //// OTHER ////
     public Integer refreshTime;
+    public Integer shouldSaveDataToCSV;
 }

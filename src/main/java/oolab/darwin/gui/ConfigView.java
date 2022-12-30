@@ -73,11 +73,15 @@ public class ConfigView extends Application {
     private TextField inputMinMutationQuantity;
     @FXML
     private TextField inputPlantEnergy;
+    @FXML
+    private CheckBox checkBoxSaveToCSV;
 
     @FXML
     public void initialize() {
         loadSettingsFromFile(new File("settings.json"), "Could not find file settings.json");
     }
+
+    public Integer widowsOpened = 0;
 
     public void loadSettings(Config config) {
         if(config.mapHeight != null)  inputMapHeight.setText(config.mapHeight.toString());
@@ -94,6 +98,7 @@ public class ConfigView extends Application {
         if(config.plantEnergy != null) inputPlantEnergy.setText(config.plantEnergy.toString());
         if(config.minMutationQuantity != null) inputMinMutationQuantity.setText(config.minMutationQuantity.toString());
         if(config.maxMutationQuantity != null) inputMaxMutationQuantity.setText(config.maxMutationQuantity.toString());
+        if(config.shouldSaveDataToCSV != null) checkBoxSaveToCSV.setSelected(config.shouldSaveDataToCSV == 1);
 
         if(config.mapVariant != null && config.mapVariant.equals(MapVariant.NORMAL)) {
             radioClassicMap.setSelected(true);
@@ -134,6 +139,8 @@ public class ConfigView extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            primaryStage.setOnCloseRequest(e -> primaryStage.close());
+
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("ConfigView.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
@@ -142,20 +149,7 @@ public class ConfigView extends Application {
         } catch (Exception error) {
             error.printStackTrace();
         }
-
-
-        //// TODO: make it multi-thread
-        /// this line below is only for temporary development purpose
-
     }
-
-    public void run( Config config ) {
-
-        //// TODO: make it multi-thread
-//        SimulationView simulationView = new SimulationView(config);
-
-    }
-
 
     public void handleStartSimulation(ActionEvent e) {
         try {
@@ -182,6 +176,7 @@ public class ConfigView extends Application {
             config.animalBehaviorVariant = radioDeviation.isSelected() ?  AnimalBehaviorVariant.DEVIATION : AnimalBehaviorVariant.PREDESTINATION;
 
             config.refreshTime = Integer.parseInt(inputRefreshTime.getText());
+            config.shouldSaveDataToCSV = checkBoxSaveToCSV.isSelected() ? 1 : 0;
             labelErrorMessage.setText("");
 
 
@@ -205,13 +200,15 @@ public class ConfigView extends Application {
             Parent root = loader.load();
 
             SimulationView controller = loader.getController();
-            controller.initializeView(config);
+            controller.initializeView(config, widowsOpened);
 
             Stage stage = new Stage();
+            stage.setOnCloseRequest(e -> controller.closeWindow());
             stage.setTitle("Simulation");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.show();
+            widowsOpened += 1;
         } catch (Exception error) {
             error.printStackTrace();
         }
