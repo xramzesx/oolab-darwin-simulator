@@ -27,6 +27,7 @@ public class SimulationEngine implements IEngine {
     private boolean isThreadSuspended = false;
     private boolean isStopped = false;
 
+    private EngineStats engineStats;
     //// INIT ////
 
     public SimulationEngine(
@@ -53,6 +54,7 @@ public class SimulationEngine implements IEngine {
         }
 
         this.map.spawnPlants(true);
+        this.engineStats = new EngineStats(this);
     }
     public void stopThread() {
           isStopped = true;
@@ -130,6 +132,8 @@ public class SimulationEngine implements IEngine {
             consumption();
             multiplyAnimals();
 
+            this.engineStats = new EngineStats(this);
+
             Thread.sleep(this.config.refreshTime);
             synchronized (this) {
                 while(isThreadSuspended) {
@@ -176,7 +180,7 @@ public class SimulationEngine implements IEngine {
 
     @Override
     public EngineStats getStats() {
-        return new EngineStats(this);
+        return this.engineStats;
     }
 
     /// OBSERVABLE ///

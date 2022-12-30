@@ -9,6 +9,8 @@ import oolab.darwin.interfaces.*;
 import oolab.darwin.stats.AnimalStats;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements IWorldMap {
@@ -17,12 +19,12 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     protected final ArrayList<Animal> animals = new ArrayList<>();
 
-    protected final Map<Vector2d, TreeSet<Animal>> animalMap = new HashMap<>();
-    protected final Map<Vector2d, Plant> plantMap = new HashMap<>();
+    protected final Map<Vector2d, TreeSet<Animal>> animalMap = new ConcurrentHashMap<>();
+    protected final Map<Vector2d, Plant> plantMap = new ConcurrentHashMap<>();
 
-    protected final Map<Vector2d, IMapElement> objects = new HashMap<>();
+    protected final Map<Vector2d, IMapElement> objects = new ConcurrentHashMap<>();
 
-    protected final Map<Vector2d, ArrayList<AnimalStats>> deathMap = new HashMap<>();
+    protected final Map<Vector2d, ArrayList<AnimalStats>> deathMap = new ConcurrentHashMap<>();
 
     //// GLOBALS ////
 
@@ -48,8 +50,6 @@ public abstract class AbstractWorldMap implements IWorldMap {
         Set <Vector2d> availableOutside = new HashSet<>(nonGreenArea);
 
         //// REMOVE ALREADY USED POSITIONS ////
-
-        /// TODO: move this part to placePlant/unplacePlant method
 
         for (Map.Entry<Vector2d, Plant> entry : plantMap.entrySet() ) {
             Vector2d position = entry.getKey();
@@ -293,13 +293,13 @@ public abstract class AbstractWorldMap implements IWorldMap {
     }
 
     @Override
-    public ArrayList<Animal> getAnimals() {
-        return animals;
+    public CopyOnWriteArrayList<Animal> getAnimals() {
+        return new CopyOnWriteArrayList<>(animals);
     }
 
     @Override
-    public ArrayList<Plant> getPlants() {
-        return new ArrayList<>( plantMap.values() );
+    public CopyOnWriteArrayList<Plant> getPlants() {
+        return new CopyOnWriteArrayList<>( plantMap.values() );
     }
 
     @Override

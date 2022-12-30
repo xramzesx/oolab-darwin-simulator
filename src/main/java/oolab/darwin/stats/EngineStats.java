@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class EngineStats {
 
@@ -53,7 +54,8 @@ public class EngineStats {
 
         Map<List<Genome>, Integer> occurrences = new HashMap<>();
 
-        for (Animal animal : map.getAnimals() ) {
+        for (int i = 0; i < map.getAnimals().size(); i++){
+            Animal animal = map.getAnimals().get(i);
             Integer count = occurrences.getOrDefault(animal.getGenomes(), 0);
             occurrences.put(animal.getGenomes(), count + 1);
         }
