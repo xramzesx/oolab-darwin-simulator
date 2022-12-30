@@ -220,35 +220,87 @@ public class ConfigView extends Application {
     public void handleStartSimulation(ActionEvent e) {
         try {
             Config config = new Config();
+            int mapWidth = Integer.parseInt(inputMapWidth.getText());
+            if(!(mapWidth > 0 && mapWidth <= 50)) {
+                throw new Exception("0 < map width <= 50");
+            }
+            int mapHeight = Integer.parseInt(inputMapHeight.getText());
+            if(!(mapHeight > 0 && mapHeight <= 50)) {
+                throw new Exception("0 < map height <= 50");
+            }
+            int initialPlantQuantity = Integer.parseInt(inputPlantQuantity.getText());
+            if(!(initialPlantQuantity > 0)) {
+                throw new Exception("initial plant quantity > 0");
+            }
+            int initialAnimalQuantity = Integer.parseInt(inputAnimalQuantity.getText());
+            if(!(initialAnimalQuantity > 0)) {
+                throw new Exception("initial animal quantity > 0");
+            }
+            int initialAnimalEnergy = Integer.parseInt(inputAnimalEnergy.getText());
+            if(!(initialAnimalEnergy > 0)) {
+                throw new Exception("initial animal energy > 0");
+            }
+            int stuffedEnergy = Integer.parseInt(inputStuffedEnergy.getText());
+            if(!(stuffedEnergy > 0)) {
+                throw new Exception("stuffed energy > 0");
+            }
+            int multiplicationEnergy = Integer.parseInt(inputMultiplicationEnergy.getText());
+            if(!(multiplicationEnergy > 0)) {
+                throw new Exception("multiplication energy > 0");
+            }
+            int genomeLength = Integer.parseInt(inputGenomeLength.getText());
+            if(!(genomeLength > 0)) {
+                throw new Exception("genome length > 0");
+            }
+            int plantsPerDay = Integer.parseInt(inputPlantsPerDay.getText());
+            if(!(plantsPerDay > 0)) {
+                throw new Exception("plants per day> 0");
+            }
+            int plantEnergy = Integer.parseInt(inputPlantEnergy.getText());
+            if(!(plantEnergy > 0)) {
+                throw new Exception("plant energy > 0");
+            }
+            int minMutationQuantity = Integer.parseInt(inputMinMutationQuantity.getText());
+            int maxMutationQuantity = Integer.parseInt(inputMaxMutationQuantity.getText());
+            if(!(minMutationQuantity > 0)) {
+                throw new Exception("min mutation quantity > 0");
+            }
+            if(!(maxMutationQuantity > 0)) {
+                throw new Exception("max mutation quantity > 0");
+            }
+            if(!(minMutationQuantity <= maxMutationQuantity)) {
+                throw new Exception("min mutation quantity <= max mutation quantity");
+            }
+            int refreshTime = Integer.parseInt(inputRefreshTime.getText());
+            if(!(refreshTime >= 100)) {
+                throw new Exception("refreshTime >= 100");
+            }
+            int shouldSaveDataToCSV = checkBoxSaveToCSV.isSelected() ? 1 : 0;
 
-            config.mapWidth = Integer.parseInt(inputMapWidth.getText());
-            config.mapHeight= Integer.parseInt(inputMapHeight.getText());
-
-            config.initialPlantQuantity = Integer.parseInt(inputPlantQuantity.getText());
-            config.initialAnimalQuantity = Integer.parseInt(inputAnimalQuantity.getText());
-            config.initialAnimalEnergy = Integer.parseInt(inputAnimalEnergy.getText());
-
-            config.stuffedEnergy = Integer.parseInt(inputStuffedEnergy.getText());
-            config.multiplicationEnergy = Integer.parseInt(inputMultiplicationEnergy.getText());
-            config.genomeLength = Integer.parseInt(inputGenomeLength.getText());
-            config.plantsPerDay = Integer.parseInt(inputPlantsPerDay.getText());
-            config.plantEnergy = Integer.parseInt(inputPlantEnergy.getText());
-            config.minMutationQuantity = Integer.parseInt(inputMinMutationQuantity.getText());
-            config.maxMutationQuantity = Integer.parseInt(inputMaxMutationQuantity.getText());
+            config.mapWidth = mapWidth;
+            config.mapHeight= mapHeight;
+            config.initialPlantQuantity = initialPlantQuantity;
+            config.initialAnimalQuantity = initialAnimalQuantity;
+            config.initialAnimalEnergy = initialAnimalEnergy;
+            config.stuffedEnergy = stuffedEnergy;
+            config.multiplicationEnergy = multiplicationEnergy;
+            config.genomeLength = genomeLength;
+            config.plantsPerDay = plantsPerDay;
+            config.plantEnergy = plantEnergy;
+            config.minMutationQuantity = minMutationQuantity;
+            config.maxMutationQuantity = maxMutationQuantity;
+            config.refreshTime = refreshTime;
+            config.shouldSaveDataToCSV = shouldSaveDataToCSV;
 
             config.boundaryVariant = radioEarth.isSelected() ? BoundaryVariant.EARTH : BoundaryVariant.HELLISH;
             config.mapVariant = radioClassicMap.isSelected() ? MapVariant.NORMAL : MapVariant.TOXIC;
             config.mutationVariant = radioRandomized.isSelected() ?  MutationVariant.RANDOMIZED : MutationVariant.CORRECTED;
             config.animalBehaviorVariant = radioDeviation.isSelected() ?  AnimalBehaviorVariant.DEVIATION : AnimalBehaviorVariant.PREDESTINATION;
 
-            config.refreshTime = Integer.parseInt(inputRefreshTime.getText());
-            config.shouldSaveDataToCSV = checkBoxSaveToCSV.isSelected() ? 1 : 0;
             labelErrorMessage.setText("");
-
-
             openSimulationView(config);
         } catch (Exception error) {
-            labelErrorMessage.setText("Invalid value " + error.getMessage().toLowerCase());
+            labelErrorMessage.setText("Invalid value! - " + error.getMessage().toLowerCase());
         }
     }
 
