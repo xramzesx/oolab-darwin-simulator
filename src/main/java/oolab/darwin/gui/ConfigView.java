@@ -268,8 +268,8 @@ public class ConfigView extends Application {
             if(!(maxMutationQuantity > 0)) {
                 throw new Exception("max mutation quantity > 0");
             }
-            if(!(minMutationQuantity < maxMutationQuantity)) {
-                throw new Exception("min mutation quantity < max mutation quantity");
+            if(!(minMutationQuantity <= maxMutationQuantity)) {
+                throw new Exception("min mutation quantity <= max mutation quantity");
             }
             int refreshTime = Integer.parseInt(inputRefreshTime.getText());
             if(!(refreshTime >= 100)) {
