@@ -79,6 +79,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
     int cellHeight= 0;
     int widowNumber = 0;
     CSVWriter fileWriter;
+    String fileName = "";
 
     public ArrayList<Vector2d> generateAnimalPositions() {
         HashSet<Vector2d> positions = new HashSet<>();
@@ -97,7 +98,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     public void closeWindow() {
         if(this.config.shouldSaveDataToCSV == 1) {
-            openFile("simulationStats" + widowNumber +".csv");
+            openFile(fileName);
         }
         this.engine.stopThread();
     }
@@ -130,10 +131,10 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
         this.config = config;
         simulationGridPane.setStyle("-fx-background-color: #5fc314");
-
+        fileName = "simulation-" + widowNumber +"-stats.csv";
         if(this.config.shouldSaveDataToCSV > 0) {
             this.widowNumber = widowNumber;
-            fileWriter = new CSVWriter("simulationStats" + widowNumber +".csv");
+            fileWriter = new CSVWriter(fileName);
             fileWriter.clearFile();
             fileWriter.saveRecord("Day,Animal quantity,Plants quantity,Free fields quantity,Most popular genotype,Avg animal energy,Avg life span"); // title
         }

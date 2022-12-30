@@ -136,13 +136,13 @@
       </Label>
       <Pane fx:id="buttonLoadFromFile" layoutX="20.0" layoutY="14.0" prefHeight="34.0" prefWidth="461.0">
          <children>
-            <Button layoutX="343.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleLoadFromFile" prefHeight="34.0" prefWidth="104.0" style="-fx-background-color: #ccc;" text="Load from file" textFill="WHITE" />
-            <Label layoutX="196.0" layoutY="4.0" text="Settings">
+            <Button layoutX="343.0" layoutY="3.0" mnemonicParsing="false" onAction="#handleLoadFromFile" prefHeight="34.0" prefWidth="104.0" style="-fx-background-color: #ccc;" text="Load from file" textFill="WHITE" />
+            <Label layoutX="192.0" layoutY="3.0" text="Settings">
                <font>
-                  <Font size="20.0" />
+                  <Font size="22.0" />
                </font>
             </Label>
-            <CheckBox fx:id="checkBoxSaveToCSV" layoutY="8.0" mnemonicParsing="false" text="Save data to .csv" />
+            <CheckBox fx:id="checkBoxSaveToCSV" layoutX="14.0" layoutY="8.0" mnemonicParsing="false" text="Save data to .csv" />
          </children>
       </Pane>
       <Pane layoutX="20.0" layoutY="285.0" prefHeight="34.0" prefWidth="461.0">
@@ -169,5 +169,10 @@
             <TextField id="inputAnimalQuantity" fx:id="inputMaxMutationQuantity" layoutX="277.0" layoutY="4.0" prefHeight="26.0" prefWidth="170.0" />
          </children>
       </Pane>
+      <Label layoutX="34.0" layoutY="38.0" prefHeight="20.0" prefWidth="170.0" text="(File will automatically open after closing the simulation)">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
