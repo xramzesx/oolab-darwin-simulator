@@ -236,6 +236,9 @@ public class ConfigView extends Application {
             if(!(initialAnimalQuantity > 0)) {
                 throw new Exception("initial animal quantity > 0");
             }
+            if (!( initialAnimalQuantity <= mapHeight * mapWidth )) {
+                throw new Exception("initial animal quantity <= map width * map height");
+            }
             int initialAnimalEnergy = Integer.parseInt(inputAnimalEnergy.getText());
             if(!(initialAnimalEnergy > 0)) {
                 throw new Exception("initial animal energy > 0");
