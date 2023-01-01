@@ -40,6 +40,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SimulationView extends Application implements Runnable, IObserver <IEngine> {
     @FXML
@@ -183,11 +184,13 @@ public class SimulationView extends Application implements Runnable, IObserver <
 
     private void generatePlants() {
         try {
-            ArrayList<Plant> plants = worldMap.getPlants();
+            CopyOnWriteArrayList<Plant> plants = worldMap.getPlants();
             Platform.runLater(() -> plantSeries.getData().add(new XYChart.Data(this.engine.day + "", plants.size())));
 
             for (int i = 0; i < plants.size(); i++) {
                 Plant currentPlant = plants.get(i);
+                if ( currentPlant == null)
+                    continue;
                 if(currentPlant.getPosition().x >= 0 && currentPlant.getPosition().x < plants.size() && currentPlant.getPosition().y >= 0 && currentPlant.getPosition().y < plants.size()) {
                     Pane plant = new Pane();
                     plant.setStyle("-fx-background-color: #1f6d04");
@@ -195,17 +198,19 @@ public class SimulationView extends Application implements Runnable, IObserver <
                 }
             }
         } catch (Exception err) {
-            System.out.println(err);
+            System.out.println("GeneratePlants error:" + err);
         }
     }
 
     private void generateAnimals() {
         try {
-            ArrayList<Animal> animals = worldMap.getAnimals();
+            CopyOnWriteArrayList<Animal> animals = worldMap.getAnimals();
             Platform.runLater(() -> animalSeries.getData().add(new XYChart.Data(this.engine.day + "", animals.size())));
 
             for (int i = 0; i < animals.size(); i++) {
                 Animal currentAnimal = animals.get(i);
+                if ( currentAnimal == null)
+                    continue;
                 if(currentAnimal.getPosition().x >= 0 && currentAnimal.getPosition().x < this.config.mapWidth && currentAnimal.getPosition().y >= 0 && currentAnimal.getPosition().y < this.config.mapHeight) {
                     Pane animal = new Pane();
                     animal.setId(i + "");
@@ -223,7 +228,7 @@ public class SimulationView extends Application implements Runnable, IObserver <
                 }
             }
         } catch (Exception err) {
-            System.out.println(err);
+            System.out.println("GenerateAnimal error: " + err);
         }
     }
 

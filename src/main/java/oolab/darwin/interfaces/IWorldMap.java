@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public interface IWorldMap {
 
@@ -42,8 +43,8 @@ public interface IWorldMap {
     Set<Vector2d> getGreenArea();
     Set<Vector2d> getNonGreenArea();
 
-    ArrayList<Animal> getAnimals();
-    ArrayList<Plant> getPlants();
+    CopyOnWriteArrayList<Animal> getAnimals();
+    CopyOnWriteArrayList<Plant> getPlants();
 
     Map<Vector2d, TreeSet<Animal>> getAnimalMap();
     Map<Vector2d, Plant> getPlantMap();
