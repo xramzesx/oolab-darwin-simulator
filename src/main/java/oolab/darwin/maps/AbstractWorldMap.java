@@ -212,6 +212,7 @@ public abstract class AbstractWorldMap implements IWorldMap {
         lifeSpanCount++;
 
         unplaceAnimal(animal, animal.position);
+        animals.remove(animal);
     }
 
     @Override

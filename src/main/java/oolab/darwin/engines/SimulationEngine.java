@@ -84,8 +84,6 @@ public class SimulationEngine implements IEngine {
                 map.kill(animal, day);
             }
         }
-
-        map.getAnimals().removeIf(Animal::isDead);
     }
 
     private void moveAnimals() {
