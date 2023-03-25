@@ -17,7 +17,7 @@ This project was developed by:
 
 ## Assumptions
 
-All requirements and assumptions regarding the project are stored in the [`/requirements/`](https://github.com/xramzesx/oolab-darwin-simulator/tree/main/requirements) directory.
+All requirements and assumptions regarding the project are stored in the [`/requirements/`](requirements) directory.
 
 ## Features & variants
 
